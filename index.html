@@ -1,0 +1,1820 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT-Wissensdatenbank | SVG</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --orange: #FFA400;
+            --orange-dark: #E09000;
+            --orange-glow: rgba(255, 164, 0, 0.15);
+            --orange-soft: #FFF8EC;
+            --green: #009E3E;
+            --green-soft: #E8F8EF;
+            --yellow: #FFD619;
+            --red: #DC2626;
+            --red-soft: #FEF2F2;
+            --ink: #1A1A2E;
+            --ink-light: #2D2D44;
+            --slate: #64748B;
+            --mist: #F1F5F9;
+            --cloud: #F8FAFC;
+            --white: #FFFFFF;
+            --glass: rgba(255,255,255,0.72);
+            --glass-border: rgba(255,255,255,0.3);
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+            --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
+            --shadow-glow: 0 0 30px rgba(255,164,0,0.15);
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --radius-full: 9999px;
+            --max-w: 1280px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--cloud);
+            color: var(--ink);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* ===== READING PROGRESS BAR ===== */
+        .progress-bar {
+            position: fixed; top: 0; left: 0; height: 3px; z-index: 1000;
+            background: linear-gradient(90deg, var(--orange), var(--yellow));
+            width: 0%; transition: width 0.15s linear;
+            box-shadow: 0 0 8px rgba(255,164,0,0.5);
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            position: sticky; top: 0; z-index: 100;
+            background: var(--glass);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            padding: 0 clamp(16px, 4vw, 40px);
+            transition: box-shadow var(--transition);
+        }
+        .header.scrolled { box-shadow: var(--shadow-md); }
+        .header-inner {
+            max-width: var(--max-w); margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between;
+            height: 68px; gap: 20px;
+        }
+        .header-brand {
+            display: flex; align-items: center; gap: 14px;
+            text-decoration: none; color: var(--ink); cursor: pointer;
+        }
+        .header-brand img { height: 38px; width: auto; }
+        .header-brand h1 {
+            font-size: 1.15rem; font-weight: 700; letter-spacing: -0.02em;
+            white-space: nowrap;
+        }
+        .header-brand h1 span {
+            background: linear-gradient(135deg, var(--orange), var(--orange-dark));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header-actions { display: flex; align-items: center; gap: 10px; }
+        .btn-back {
+            display: none; align-items: center; gap: 6px;
+            padding: 8px 16px; border-radius: var(--radius-full);
+            border: 1.5px solid rgba(0,0,0,0.1); background: var(--white);
+            font-size: 0.82rem; font-weight: 600; color: var(--ink);
+            cursor: pointer; transition: all var(--transition);
+            font-family: inherit;
+        }
+        .btn-back:hover { border-color: var(--orange); color: var(--orange); }
+        .btn-back svg { width: 16px; height: 16px; }
+        .btn-back.show { display: inline-flex; }
+
+        /* ===== HERO ===== */
+        .hero {
+            position: relative; overflow: hidden;
+            background: linear-gradient(135deg, #1A1A2E 0%, #16213E 50%, #0F3460 100%);
+            padding: clamp(48px, 8vw, 100px) clamp(16px, 4vw, 40px) clamp(48px, 8vw, 80px);
+        }
+        .hero::before {
+            content: ''; position: absolute; inset: 0;
+            background:
+                radial-gradient(ellipse 600px 400px at 20% 50%, rgba(255,164,0,0.15), transparent),
+                radial-gradient(ellipse 500px 500px at 80% 20%, rgba(0,158,62,0.1), transparent),
+                radial-gradient(ellipse 400px 300px at 60% 80%, rgba(255,214,25,0.08), transparent);
+        }
+        .hero-dots {
+            position: absolute; inset: 0; opacity: 0.04;
+            background-image: radial-gradient(circle, #fff 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .hero-inner {
+            position: relative; z-index: 1;
+            max-width: 720px; margin: 0 auto; text-align: center;
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+            border-radius: var(--radius-full);
+            padding: 6px 16px; margin-bottom: 24px;
+            font-size: 0.78rem; font-weight: 600; color: rgba(255,255,255,0.7);
+            letter-spacing: 0.04em; text-transform: uppercase;
+        }
+        .hero-badge .dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--green); animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+        .hero h2 {
+            font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800;
+            color: var(--white); letter-spacing: -0.03em;
+            line-height: 1.2; margin-bottom: 16px;
+        }
+        .hero h2 .highlight {
+            background: linear-gradient(135deg, var(--orange), var(--yellow));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero p {
+            font-size: 1.05rem; color: rgba(255,255,255,0.6);
+            font-weight: 400; max-width: 500px; margin: 0 auto 32px;
+        }
+
+        /* ===== SEARCH ===== */
+        .search-wrap {
+            position: relative; max-width: 560px; margin: 0 auto;
+        }
+        .search-wrap input {
+            width: 100%; padding: 16px 20px 16px 52px;
+            border: 1.5px solid rgba(255,255,255,0.15);
+            border-radius: var(--radius-lg);
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            font-size: 1rem; color: var(--white);
+            font-family: inherit; font-weight: 500;
+            transition: all var(--transition);
+            outline: none;
+        }
+        .search-wrap input::placeholder { color: rgba(255,255,255,0.35); }
+        .search-wrap input:focus {
+            border-color: var(--orange);
+            background: rgba(255,255,255,0.12);
+            box-shadow: var(--shadow-glow);
+        }
+        .search-wrap .search-icon {
+            position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
+            width: 20px; height: 20px; color: rgba(255,255,255,0.35);
+            transition: color var(--transition);
+        }
+        .search-wrap input:focus ~ .search-icon { color: var(--orange); }
+        .search-count {
+            position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+            font-size: 0.75rem; color: rgba(255,255,255,0.3); font-weight: 500;
+        }
+
+        /* ===== CATEGORY NAV ===== */
+        .cat-nav {
+            background: var(--white); border-bottom: 1px solid rgba(0,0,0,0.06);
+            padding: 0 clamp(16px, 4vw, 40px);
+            position: sticky; top: 68px; z-index: 90;
+        }
+        .cat-nav-inner {
+            max-width: var(--max-w); margin: 0 auto;
+            display: flex; gap: 4px; overflow-x: auto;
+            scrollbar-width: none; -ms-overflow-style: none;
+            padding: 12px 0;
+        }
+        .cat-nav-inner::-webkit-scrollbar { display: none; }
+        .cat-btn {
+            display: inline-flex; align-items: center; gap: 7px;
+            padding: 8px 18px; border-radius: var(--radius-full);
+            border: 1.5px solid transparent; background: var(--mist);
+            font-size: 0.82rem; font-weight: 600; color: var(--slate);
+            cursor: pointer; white-space: nowrap;
+            transition: all var(--transition); font-family: inherit;
+        }
+        .cat-btn:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-soft); }
+        .cat-btn.active {
+            background: var(--ink); color: var(--white); border-color: var(--ink);
+        }
+        .cat-btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+        /* ===== MAIN CONTENT ===== */
+        .main {
+            max-width: var(--max-w); margin: 0 auto;
+            padding: 32px clamp(16px, 4vw, 40px) 60px;
+        }
+
+        /* ===== SECTION TITLE ===== */
+        .section-title {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 24px; flex-wrap: wrap; gap: 8px;
+        }
+        .section-title h3 {
+            font-size: 1.35rem; font-weight: 800; letter-spacing: -0.02em;
+            color: var(--ink);
+        }
+        .section-title .count {
+            font-size: 0.8rem; font-weight: 600; color: var(--slate);
+            background: var(--mist); padding: 4px 12px;
+            border-radius: var(--radius-full);
+        }
+
+        /* ===== CARD GRID ===== */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 20px;
+        }
+
+        /* ===== CATEGORY CARD ===== */
+        .cat-card {
+            background: var(--white); border-radius: var(--radius-md);
+            border: 1px solid rgba(0,0,0,0.06);
+            overflow: hidden; transition: all var(--transition);
+            opacity: 0; transform: translateY(16px);
+            animation: cardIn 0.5s ease forwards;
+        }
+        .cat-card:nth-child(1) { animation-delay: 0.0s; }
+        .cat-card:nth-child(2) { animation-delay: 0.06s; }
+        .cat-card:nth-child(3) { animation-delay: 0.12s; }
+        .cat-card:nth-child(4) { animation-delay: 0.18s; }
+        .cat-card:nth-child(5) { animation-delay: 0.24s; }
+        .cat-card:nth-child(6) { animation-delay: 0.30s; }
+        @keyframes cardIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .cat-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-4px);
+            border-color: transparent;
+        }
+        .cat-card-head {
+            padding: 20px 24px 16px;
+            display: flex; align-items: center; gap: 14px;
+        }
+        .cat-icon {
+            width: 46px; height: 46px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0; position: relative; overflow: hidden;
+        }
+        .cat-icon::after {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.2));
+        }
+        .cat-icon svg { width: 24px; height: 24px; fill: var(--white); position: relative; z-index: 1; }
+        .cat-card-head .info h4 {
+            font-size: 1rem; font-weight: 700; letter-spacing: -0.01em;
+        }
+        .cat-card-head .info .sub {
+            font-size: 0.75rem; color: var(--slate); font-weight: 500;
+        }
+        .cat-card-body { padding: 4px 24px 20px; }
+        .cat-card-body ul { list-style: none; }
+        .cat-card-body li {
+            border-bottom: 1px solid var(--mist);
+        }
+        .cat-card-body li:last-child { border-bottom: none; }
+        .cat-card-body a {
+            display: flex; align-items: center; gap: 10px;
+            padding: 10px 0; color: var(--ink);
+            text-decoration: none; font-size: 0.88rem; font-weight: 500;
+            transition: all var(--transition);
+        }
+        .cat-card-body a:hover { color: var(--orange); padding-left: 6px; }
+        .cat-card-body a .arrow {
+            margin-left: auto; width: 16px; height: 16px; color: var(--slate);
+            opacity: 0; transform: translateX(-4px);
+            transition: all var(--transition);
+        }
+        .cat-card-body a:hover .arrow { opacity: 1; transform: translateX(0); color: var(--orange); }
+        .cat-card-body a .bullet {
+            width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+            transition: transform var(--transition);
+        }
+        .cat-card-body a:hover .bullet { transform: scale(1.5); }
+
+        /* Category colors */
+        .color-ki { background: linear-gradient(135deg, var(--orange), var(--orange-dark)); }
+        .color-ms365 { background: linear-gradient(135deg, var(--green), #007a2f); }
+        .color-browser { background: linear-gradient(135deg, var(--yellow), #E6C000); }
+        .color-sicherheit { background: linear-gradient(135deg, #DC2626, #B91C1C); }
+        .color-hardware { background: linear-gradient(135deg, #64748B, #475569); }
+        .color-tipps { background: linear-gradient(135deg, var(--yellow), var(--orange)); }
+
+        .dot-ki { background: var(--orange); }
+        .dot-ms365 { background: var(--green); }
+        .dot-browser { background: var(--yellow); }
+        .dot-sicherheit { background: var(--red); }
+        .dot-hardware { background: var(--slate); }
+        .dot-tipps { background: var(--orange); }
+
+        /* ===== ARTICLE VIEW ===== */
+        .article-wrap {
+            display: none; max-width: var(--max-w); margin: 0 auto;
+            padding: 32px clamp(16px, 4vw, 40px) 60px;
+        }
+        .article-wrap.show { display: block; animation: fadeUp 0.35s ease; }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .breadcrumb {
+            display: flex; align-items: center; gap: 8px;
+            margin-bottom: 24px; font-size: 0.82rem; color: var(--slate);
+            font-weight: 500; flex-wrap: wrap;
+        }
+        .breadcrumb a {
+            color: var(--orange); text-decoration: none; cursor: pointer;
+            transition: color var(--transition);
+        }
+        .breadcrumb a:hover { color: var(--orange-dark); }
+        .breadcrumb .sep { color: rgba(0,0,0,0.2); }
+
+        .article {
+            background: var(--white); border-radius: var(--radius-lg);
+            border: 1px solid rgba(0,0,0,0.06);
+            box-shadow: var(--shadow-sm);
+            padding: clamp(24px, 4vw, 48px);
+        }
+        .article-header { margin-bottom: 32px; }
+        .article-header .cat-tag {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 4px 12px; border-radius: var(--radius-full);
+            font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.05em; margin-bottom: 12px;
+        }
+        .tag-ki { background: var(--orange-soft); color: var(--orange-dark); }
+        .tag-ms365 { background: var(--green-soft); color: var(--green); }
+        .tag-browser { background: #FFFBEB; color: #B45309; }
+        .tag-sicherheit { background: var(--red-soft); color: var(--red); }
+        .tag-hardware { background: var(--mist); color: var(--slate); }
+        .tag-tipps { background: var(--orange-soft); color: var(--orange); }
+
+        .article-header h2 {
+            font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 800;
+            letter-spacing: -0.03em; line-height: 1.25; margin-bottom: 12px;
+        }
+        .article-meta {
+            display: flex; gap: 20px; flex-wrap: wrap;
+            font-size: 0.8rem; color: var(--slate); font-weight: 500;
+        }
+        .article-meta span { display: flex; align-items: center; gap: 5px; }
+        .article-meta svg { width: 14px; height: 14px; }
+
+        .article .content h3 {
+            font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em;
+            margin: 36px 0 12px; color: var(--ink);
+            padding-left: 16px; position: relative;
+        }
+        .article .content h3::before {
+            content: ''; position: absolute; left: 0; top: 2px; bottom: 2px;
+            width: 4px; border-radius: 2px;
+            background: linear-gradient(180deg, var(--orange), var(--yellow));
+        }
+        .article .content h4 {
+            font-size: 0.95rem; font-weight: 700; margin: 24px 0 8px;
+            color: var(--ink-light);
+        }
+        .article .content p { margin-bottom: 14px; color: #475569; font-size: 0.92rem; }
+        .article .content ul, .article .content ol {
+            margin: 12px 0 18px 20px; color: #475569; font-size: 0.92rem;
+        }
+        .article .content li { margin-bottom: 8px; }
+        .article .content strong { color: var(--ink); font-weight: 600; }
+        .article .content code {
+            background: var(--mist); padding: 2px 8px;
+            border-radius: 6px; font-size: 0.84rem; font-weight: 500;
+            border: 1px solid rgba(0,0,0,0.06);
+            font-family: 'Cascadia Code', 'Fira Code', monospace;
+        }
+        .article .content table {
+            width: 100%; border-collapse: separate; border-spacing: 0;
+            margin: 16px 0; font-size: 0.88rem;
+            border-radius: var(--radius-sm); overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.08);
+        }
+        .article .content th {
+            background: var(--ink); color: var(--white);
+            padding: 12px 16px; text-align: left; font-weight: 600;
+            font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.03em;
+        }
+        .article .content td {
+            padding: 11px 16px; border-bottom: 1px solid var(--mist);
+        }
+        .article .content tr:last-child td { border-bottom: none; }
+        .article .content tr:hover td { background: var(--cloud); }
+
+        .info-box {
+            background: var(--orange-soft);
+            border-left: 4px solid var(--orange);
+            padding: 16px 20px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            margin: 20px 0; font-size: 0.9rem;
+        }
+        .info-box strong { color: var(--orange-dark); }
+        .tipp-box {
+            background: var(--green-soft);
+            border-left: 4px solid var(--green);
+            padding: 16px 20px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            margin: 20px 0; font-size: 0.9rem;
+        }
+        .tipp-box strong { color: var(--green); }
+        .warnung-box {
+            background: var(--red-soft);
+            border-left: 4px solid var(--red);
+            padding: 16px 20px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            margin: 20px 0; font-size: 0.9rem;
+        }
+        .warnung-box strong { color: var(--red); }
+
+        .feedback-bar {
+            margin-top: 40px; padding-top: 28px;
+            border-top: 1px solid var(--mist); text-align: center;
+        }
+        .feedback-bar p { font-size: 0.88rem; color: var(--slate); margin-bottom: 14px; font-weight: 500; }
+        .feedback-bar button {
+            padding: 10px 24px; border-radius: var(--radius-full);
+            border: 1.5px solid rgba(0,0,0,0.1); background: var(--white);
+            font-size: 0.85rem; font-weight: 600; color: var(--ink);
+            cursor: pointer; margin: 0 6px;
+            transition: all var(--transition); font-family: inherit;
+        }
+        .feedback-bar button:hover { border-color: var(--orange); color: var(--orange); background: var(--orange-soft); }
+
+        /* ===== SEARCH RESULTS ===== */
+        .search-results {
+            display: none; max-width: var(--max-w); margin: 0 auto;
+            padding: 32px clamp(16px, 4vw, 40px) 60px;
+        }
+        .search-results.show { display: block; }
+        .search-results h3 {
+            font-size: 1rem; color: var(--slate); font-weight: 600;
+            margin-bottom: 18px;
+        }
+        .result-item {
+            background: var(--white); border-radius: var(--radius-md);
+            border: 1px solid rgba(0,0,0,0.06);
+            padding: 18px 24px; margin-bottom: 10px;
+            cursor: pointer; transition: all var(--transition);
+        }
+        .result-item:hover {
+            border-color: var(--orange);
+            box-shadow: var(--shadow-md);
+            transform: translateX(4px);
+        }
+        .result-item .rtag {
+            display: inline-block; font-size: 0.7rem; font-weight: 700;
+            padding: 3px 10px; border-radius: var(--radius-full);
+            margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.04em;
+        }
+        .result-item h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
+        .result-item p { font-size: 0.82rem; color: var(--slate); }
+
+        /* ===== SCROLL TO TOP ===== */
+        .scroll-top {
+            position: fixed; bottom: 28px; right: 28px; z-index: 200;
+            width: 44px; height: 44px; border-radius: 50%;
+            background: var(--ink); color: var(--white); border: none;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            box-shadow: var(--shadow-lg); opacity: 0; pointer-events: none;
+            transition: all var(--transition); font-family: inherit;
+        }
+        .scroll-top.show { opacity: 1; pointer-events: auto; }
+        .scroll-top:hover { background: var(--orange); transform: translateY(-2px); }
+        .scroll-top svg { width: 20px; height: 20px; }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: var(--ink); color: rgba(255,255,255,0.5);
+            padding: 40px clamp(16px, 4vw, 40px); text-align: center;
+            font-size: 0.8rem;
+        }
+        .footer-inner { max-width: var(--max-w); margin: 0 auto; }
+        .footer img { height: 32px; width: auto; margin-bottom: 14px; }
+        .footer a { color: var(--orange); text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .card-grid { grid-template-columns: 1fr; }
+            .header-inner { height: 56px; }
+            .header-brand h1 { font-size: 1rem; }
+            .header-brand img { height: 30px; }
+            .hero { padding: 40px 16px 36px; }
+            .hero h2 { font-size: 1.5rem; }
+            .article { padding: 20px; }
+        }
+
+        /* ===== UTILITY ===== */
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- HEADER -->
+<header class="header" id="header">
+    <div class="header-inner">
+        <a class="header-brand" onclick="showHome()">
+            <img src="https://www.svg-hannover.de/typo3conf/ext/dg_theme_svg/Resources/Public/Logos/SVG.png" alt="SVG Logo">
+            <h1>IT-<span>Wissensdatenbank</span></h1>
+        </a>
+        <div class="header-actions">
+            <button class="btn-back" id="btnBack" onclick="showHome()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+                Zur&uuml;ck
+            </button>
+        </div>
+    </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="heroSection">
+    <div class="hero-dots"></div>
+    <div class="hero-inner">
+        <div class="hero-badge"><span class="dot"></span> 27 Artikel verf&uuml;gbar</div>
+        <h2>Alles, was Sie f&uuml;r die <span class="highlight">digitale Arbeit</span> brauchen</h2>
+        <p>Anleitungen, Tipps und Best Practices f&uuml;r Ihren Arbeitsalltag mit Microsoft&nbsp;365 und mehr.</p>
+        <div class="search-wrap">
+            <input type="text" id="searchInput" placeholder="Suchen Sie nach Themen, z.B. &laquo;Outlook Signatur&raquo; ..." oninput="handleSearch()" autocomplete="off">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <span class="search-count" id="searchCount"></span>
+        </div>
+    </div>
+</section>
+
+<!-- CATEGORY NAV -->
+<nav class="cat-nav" id="catNav">
+    <div class="cat-nav-inner">
+        <button class="cat-btn active" onclick="filterCat('alle', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            Alle Themen
+        </button>
+        <button class="cat-btn" onclick="filterCat('ki', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a2 2 0 012 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 017 7h1a1 1 0 110 2h-1.07A7 7 0 0113 22h-2a7 7 0 01-6.93-6H3a1 1 0 110-2h1a7 7 0 017-7h1V5.73A2 2 0 0112 2z"/></svg>
+            K&uuml;nstliche Intelligenz
+        </button>
+        <button class="cat-btn" onclick="filterCat('ms365', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg>
+            Microsoft 365
+        </button>
+        <button class="cat-btn" onclick="filterCat('browser', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+            Browser &amp; Web
+        </button>
+        <button class="cat-btn" onclick="filterCat('sicherheit', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            IT-Sicherheit
+        </button>
+        <button class="cat-btn" onclick="filterCat('hardware', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
+            Hardware &amp; Ger&auml;te
+        </button>
+        <button class="cat-btn" onclick="filterCat('tipps', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 00-4 12.7V17h8v-2.3A7 7 0 0012 2z"/></svg>
+            Tipps &amp; Tricks
+        </button>
+    </div>
+</nav>
+
+<!-- MAIN GRID -->
+<main class="main" id="mainSection">
+    <div class="section-title">
+        <h3 id="sectionLabel">Alle Themen</h3>
+        <span class="count" id="sectionCount">6 Kategorien &middot; 27 Artikel</span>
+    </div>
+    <div class="card-grid" id="cardGrid">
+
+        <!-- KI -->
+        <div class="cat-card" data-cat="ki">
+            <div class="cat-card-head">
+                <div class="cat-icon color-ki">
+                    <svg viewBox="0 0 24 24"><path d="M12 2a2 2 0 012 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 017 7h1a1 1 0 110 2h-1.07A7 7 0 0113 22h-2a7 7 0 01-6.93-6H3a1 1 0 110-2h1a7 7 0 017-7h1V5.73c-.6-.34-1-.99-1-1.73a2 2 0 012-2zm-1 9a5 5 0 00-5 5 5 5 0 005 5h2a5 5 0 005-5 5 5 0 00-5-5h-2zm-1 3a1 1 0 110 2 1 1 0 010-2zm4 0a1 1 0 110 2 1 1 0 010-2z"/></svg>
+                </div>
+                <div class="info">
+                    <h4>K&uuml;nstliche Intelligenz</h4>
+                    <span class="sub">3 Artikel</span>
+                </div>
+            </div>
+            <div class="cat-card-body">
+                <ul>
+                    <li><a href="#" onclick="showArticle('chatgpt-grundlagen'); return false;"><span class="bullet dot-ki"></span>ChatGPT Grundlagen<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+                    <li><a href="#" onclick="showArticle('copilot-ms365'); return false;"><span class="bullet dot-ki"></span>Microsoft Copilot in MS 365<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+                    <li><a href="#" onclick="showArticle('prompting-tipps'); return false;"><span class="bullet dot-ki"></span>Prompting-Tipps<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- MS 365 -->
+        <div class="cat-card" data-cat="ms365">
+            <div class="cat-card-head">
+                <div class="cat-icon color-ms365">
+                    <svg viewBox="0 0 24 24"><path d="M3 3h8v8H3V3zm10 0h8v8h-8V3zM3 13h8v8H3v-8zm10 0h8v8h-8v-8z"/></svg>
+                </div>
+                <div class="info">
+                    <h4>Microsoft 365</h4>
+                    <span class="sub">12 Artikel</span>
+                </div>
+            </div>
+            <div class="cat-card-body">
+                <ul>
+                    <li><a href="#" onclick="showArticle('outlook'); return false;"><span class="bullet dot-ms365"></span>Outlook &mdash; Tipps &amp; Tricks<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+                    <li><a href="#" onclick="showArticle('teams'); return false;"><span class="bullet dot-ms365"></span>Teams &mdash; Tipps &amp; Tricks<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+                    <li><a href="#" onclick="showArticle('excel'); return false;"><span class="bullet dot-ms365"></span>Excel &mdash; Tipps &amp; Tricks<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+                    <li><a href="#" onclick="showArticle('word'); return false;"><span class="bullet dot-ms365"></span>Word &mdash; Tipps &amp; Tricks<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+                    <li><a href="#" onclick="showArticle('powerpoint'); return false;"><span class="bullet dot-ms365"></span>PowerPoint &mdash; Tipps &amp; Tricks<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+                    <li><a href="#" onclick="showArticle('onedrive'); return false;"><span class="bullet dot-ms365"></span>OneDrive &mdash; Tipps &amp; Tricks<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+                    <li><a href="#" onclick="showArticle('onenote'); return false;"><span class="bullet dot-ms365"></span>OneNote &mdash; Tipps &amp; Tricks<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+                    <li><a href="#" onclick="showArticle('sharepoint'); return false;"><span class="bullet dot-ms365"></span>SharePoint &mdash; Tipps &amp; Tricks<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+                    <li><a href="#" onclick="showArticle('planner-todo'); return false;"><span class="bullet dot-ms365"></span>Planner &amp; To Do<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+                    <li><a href="#" onclick="showArticle('lists'); return false;"><span class="bullet dot-ms365"></span>Microsoft Lists<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+                    <li><a href="#" onclick="showArticle('forms'); return false;"><span class="bullet dot-ms365"></span>Microsoft Forms<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+                    <li><a href="#" onclick="showArticle('bookings'); return false;"><span class="bullet dot-ms365"></span>Microsoft Bookings<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Browser -->
+        <div class="cat-card" data-cat="browser">
+            <div class="cat-card-head">
+                <div class="cat-icon color-browser">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                </div>
+                <div class="info">
+                    <h4>Browser &amp; Web</h4>
+                    <span class="sub">3 Artikel</span>
+                </div>
+            </div>
+            <div class="cat-card-body">
+                <ul>
+                    <li><a href="#" onclick="showArticle('chrome-tipps'); return false;"><span class="bullet dot-browser"></span>Google Chrome &mdash; Tipps &amp; Tricks<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+                    <li><a href="#" onclick="showArticle('edge-tipps'); return false;"><span class="bullet dot-browser"></span>Microsoft Edge &mdash; Tipps &amp; Tricks<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+                    <li><a href="#" onclick="showArticle('firefox-tipps'); return false;"><span class="bullet dot-browser"></span>Mozilla Firefox &mdash; Tipps &amp; Tricks<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- IT-Sicherheit -->
+        <div class="cat-card" data-cat="sicherheit">
+            <div class="cat-card-head">
+                <div class="cat-icon color-sicherheit">
+                    <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+                </div>
+                <div class="info">
+                    <h4>IT-Sicherheit</h4>
+                    <span class="sub">3 Artikel</span>
+                </div>
+            </div>
+            <div class="cat-card-body">
+                <ul>
+                    <li><a href="#" onclick="showArticle('sicher-phishing'); return false;"><span class="bullet dot-sicherheit"></span>Phishing-Mails erkennen<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+                    <li><a href="#" onclick="showArticle('sicher-passwort'); return false;"><span class="bullet dot-sicherheit"></span>Sichere Passw&ouml;rter erstellen<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+                    <li><a href="#" onclick="showArticle('sicher-mfa'); return false;"><span class="bullet dot-sicherheit"></span>Multi-Faktor-Authentifizierung<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Hardware -->
+        <div class="cat-card" data-cat="hardware">
+            <div class="cat-card-head">
+                <div class="cat-icon color-hardware">
+                    <svg viewBox="0 0 24 24"><path d="M20 18c1.1 0 1.99-.9 1.99-2L22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2H0v2h24v-2h-4zM4 6h16v10H4V6z"/></svg>
+                </div>
+                <div class="info">
+                    <h4>Hardware &amp; Ger&auml;te</h4>
+                    <span class="sub">3 Artikel</span>
+                </div>
+            </div>
+            <div class="cat-card-body">
+                <ul>
+                    <li><a href="#" onclick="showArticle('hw-drucker'); return false;"><span class="bullet dot-hardware"></span>Drucker einrichten &amp; Probleme l&ouml;sen<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+                    <li><a href="#" onclick="showArticle('hw-monitor'); return false;"><span class="bullet dot-hardware"></span>Mehrere Monitore einrichten<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+                    <li><a href="#" onclick="showArticle('hw-headset'); return false;"><span class="bullet dot-hardware"></span>Headset &amp; Kamera f&uuml;r Teams<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Tipps -->
+        <div class="cat-card" data-cat="tipps">
+            <div class="cat-card-head">
+                <div class="cat-icon color-tipps">
+                    <svg viewBox="0 0 24 24"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>
+                </div>
+                <div class="info">
+                    <h4>Tipps &amp; Tricks</h4>
+                    <span class="sub">3 Artikel</span>
+                </div>
+            </div>
+            <div class="cat-card-body">
+                <ul>
+                    <li><a href="#" onclick="showArticle('tipp-shortcuts'); return false;"><span class="bullet dot-tipps"></span>Windows-Tastenkombinationen<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+                    <li><a href="#" onclick="showArticle('tipp-screenshot'); return false;"><span class="bullet dot-tipps"></span>Screenshots erstellen<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+                    <li><a href="#" onclick="showArticle('tipp-schnellstart'); return false;"><span class="bullet dot-tipps"></span>PC schneller machen<svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a></li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+<!-- ARTICLE VIEW -->
+<div class="article-wrap" id="articleWrap">
+    <div class="breadcrumb">
+        <a onclick="showHome()">Startseite</a>
+        <span class="sep">&rsaquo;</span>
+        <span id="bcCat">Kategorie</span>
+        <span class="sep">&rsaquo;</span>
+        <span id="bcTitle">Artikel</span>
+    </div>
+    <div class="article" id="articleContent"></div>
+</div>
+
+<!-- SEARCH RESULTS -->
+<div class="search-results" id="searchResults">
+    <h3 id="searchStatus">Suchergebnisse</h3>
+    <div id="searchList"></div>
+</div>
+
+<!-- SCROLL TO TOP -->
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+</button>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-inner">
+        <img src="https://www.svg-hannover.de/typo3conf/ext/dg_theme_svg/Resources/Public/Logos/SVG.png" alt="SVG Logo"><br>
+        IT-Wissensdatenbank &mdash; SVG Stra&szlig;enverkehrsgenossenschaft Niedersachsen/Sachsen-Anhalt<br>
+        Bei Fragen wenden Sie sich an die <a href="#">IT-Abteilung</a>
+    </div>
+</footer>
+
+<script>
+// ===== ARTICLE DATABASE =====
+const artikel = {
+
+'chatgpt-grundlagen': {
+    titel: 'ChatGPT Grundlagen',
+    kategorie: 'K\u00fcnstliche Intelligenz',
+    katId: 'ki',
+    datum: 'April 2026',
+    lesezeit: '5 Min.',
+    inhalt: `
+        <div class="info-box"><strong>Kurz erkl\u00e4rt:</strong> ChatGPT ist ein Computerprogramm, dem Sie Fragen stellen oder Aufgaben geben k\u00f6nnen \u2014 und es antwortet in normalem Text. Sie k\u00f6nnen damit z.B. E-Mails formulieren lassen, Texte zusammenfassen oder Ideen sammeln. Es ist wie ein digitaler Assistent, der Ihnen beim Schreiben und Denken hilft.</div>
+
+        <h3>Was ist ChatGPT?</h3>
+        <p>ChatGPT ist ein KI-Sprachmodell von OpenAI, das Texte verstehen und generieren kann. Es eignet sich f\u00fcr viele Aufgaben im Arbeitsalltag.</p>
+
+        <h3>Typische Anwendungsf\u00e4lle</h3>
+        <table>
+            <tr><th>Anwendung</th><th>Beispiel</th></tr>
+            <tr><td>Texte formulieren</td><td>E-Mails, Berichte, Zusammenfassungen</td></tr>
+            <tr><td>Recherche</td><td>Informationen zu Fachthemen zusammenfassen</td></tr>
+            <tr><td>\u00dcbersetzungen</td><td>Texte in andere Sprachen \u00fcbertragen</td></tr>
+            <tr><td>Brainstorming</td><td>Ideen sammeln und strukturieren</td></tr>
+            <tr><td>Datenanalyse</td><td>Tabellen erkl\u00e4ren, Formeln vorschlagen</td></tr>
+            <tr><td>Code &amp; Skripte</td><td>Kleine Automatisierungen erstellen</td></tr>
+        </table>
+
+        <h3>Wichtige Hinweise zur Nutzung</h3>
+        <div class="warnung-box">
+            <strong>Wichtig:</strong> Keine vertraulichen Daten eingeben \u2014 Kundendaten, Passw\u00f6rter oder interne Dokumente geh\u00f6ren nicht in ChatGPT!
+        </div>
+
+        <h4>Was ChatGPT gut kann</h4>
+        <ul>
+            <li>Texte umformulieren und verbessern</li>
+            <li>Komplexe Themen einfach erkl\u00e4ren</li>
+            <li>Strukturen und Gliederungen vorschlagen</li>
+            <li>Schnelle Entw\u00fcrfe erstellen</li>
+        </ul>
+
+        <h4>Wo ChatGPT Schw\u00e4chen hat</h4>
+        <ul>
+            <li>Aktuelle Informationen (Wissen hat einen Stichtag)</li>
+            <li>Mathematische Berechnungen (besser Excel nutzen)</li>
+            <li>Rechtliche oder medizinische Beratung</li>
+            <li>Fakten ohne Quellenangabe</li>
+        </ul>
+
+        <div class="tipp-box">
+            <strong>Tipp:</strong> Ergebnisse immer gegenpr\u00fcfen \u2014 KI kann Fehler machen ("Halluzinationen").
+        </div>
+
+        <div class="warnung-box">
+            <strong>SVG-Regelung:</strong> Bei der SVG d\u00fcrfen nur KI-Tools genutzt werden, die in der <strong>Anlage A der KI-Richtlinie</strong> freigegeben sind. Die aktuelle Liste finden Sie im Intranet. <strong>Private KI-Konten d\u00fcrfen nicht f\u00fcr dienstliche Zwecke genutzt werden.</strong> Fragen Sie die IT-Abteilung, welche Tools f\u00fcr Sie freigegeben sind.
+        </div>
+
+        <h3>Einstieg</h3>
+        <ol>
+            <li>Pr\u00fcfen Sie in der <strong>Anlage A</strong> (Intranet), welche KI-Tools f\u00fcr Sie freigegeben sind</li>
+            <li>Nutzen Sie ausschlie\u00dflich Ihr <strong>dienstliches Konto</strong> \u2014 keine privaten Accounts</li>
+            <li>Starten Sie mit einer einfachen Frage oder Aufgabe</li>
+            <li>Verfeinern Sie Ihre Anfrage schrittweise (siehe Artikel <em>Prompting-Tipps</em>)</li>
+        </ol>
+
+        <h3>Was darf nicht in KI-Tools eingegeben werden?</h3>
+        <ul>
+            <li><strong>Personenbezogene Daten</strong> (Namen, Adressen, Kundendaten)</li>
+            <li><strong>Passw\u00f6rter oder Zugangsdaten</strong></li>
+            <li><strong>Vertrags-, Abrechnungs- oder Strategieinformationen</strong></li>
+            <li><strong>Sensible Unternehmensdaten</strong> \u2014 im Zweifel vorher die IT fragen</li>
+        </ul>
+    `
+},
+
+'copilot-ms365': {
+    titel: 'Microsoft Copilot in MS 365',
+    kategorie: 'K\u00fcnstliche Intelligenz',
+    katId: 'ki',
+    datum: 'April 2026',
+    lesezeit: '6 Min.',
+    inhalt: `
+        <div class="info-box"><strong>Kurz erkl\u00e4rt:</strong> Copilot ist ein KI-Assistent, der direkt in Word, Excel, PowerPoint, Teams und Outlook eingebaut ist. Er kann Ihnen helfen, E-Mails zu schreiben, Meetings zusammenzufassen oder Daten zu analysieren \u2014 direkt in den Programmen, die Sie sowieso nutzen. Sie brauchen daf\u00fcr eine spezielle Lizenz \u2014 fragen Sie die IT, ob Sie Zugang haben.</div>
+
+        <h3>Was ist Microsoft Copilot?</h3>
+        <p>Microsoft Copilot ist ein KI-Assistent, der direkt in die MS 365-Apps (Word, Excel, PowerPoint, Teams, Outlook) integriert ist. Er nutzt Ihre Unternehmensdaten, um kontextbezogene Hilfe zu bieten.</p>
+
+        <h3>Copilot in Word</h3>
+        <ul>
+            <li><strong>Texte entwerfen</strong> \u2014 "Schreibe einen Entwurf f\u00fcr eine Kundenmail zum Thema X"</li>
+            <li><strong>Zusammenfassen</strong> \u2014 Lange Dokumente auf die Kernpunkte reduzieren</li>
+            <li><strong>Umformulieren</strong> \u2014 Textstellen professioneller oder einfacher gestalten</li>
+            <li><strong>Formatieren</strong> \u2014 Inhalte in Tabellen oder Listen umwandeln</li>
+        </ul>
+
+        <h3>Copilot in Excel</h3>
+        <ul>
+            <li><strong>Daten analysieren</strong> \u2014 "Welche Trends zeigen die Verkaufszahlen?"</li>
+            <li><strong>Formeln erstellen</strong> \u2014 Beschreiben Sie, was Sie berechnen wollen</li>
+            <li><strong>Diagramme vorschlagen</strong> \u2014 Passende Visualisierungen zu Ihren Daten</li>
+            <li><strong>Daten bereinigen</strong> \u2014 Duplikate finden, Formate vereinheitlichen</li>
+        </ul>
+
+        <h3>Copilot in PowerPoint</h3>
+        <ul>
+            <li><strong>Pr\u00e4sentationen erstellen</strong> \u2014 Aus einem Word-Dokument oder Stichworten</li>
+            <li><strong>Design vorschlagen</strong> \u2014 Layout und Gestaltung optimieren</li>
+            <li><strong>Inhalte erg\u00e4nzen</strong> \u2014 Sprechernotizen generieren lassen</li>
+        </ul>
+
+        <h3>Copilot in Teams</h3>
+        <ul>
+            <li><strong>Meeting-Zusammenfassungen</strong> \u2014 Automatische Protokolle nach Besprechungen</li>
+            <li><strong>Verpasste Meetings</strong> \u2014 "Was wurde in meiner Abwesenheit besprochen?"</li>
+            <li><strong>Chat-Zusammenfassungen</strong> \u2014 Lange Chat-Verl\u00e4ufe zusammenfassen</li>
+        </ul>
+
+        <h3>Copilot in Outlook</h3>
+        <ul>
+            <li><strong>E-Mail-Entw\u00fcrfe</strong> \u2014 Schnelle Antworten vorschlagen lassen</li>
+            <li><strong>Zusammenfassungen</strong> \u2014 Lange E-Mail-Threads auf den Punkt bringen</li>
+            <li><strong>Termine planen</strong> \u2014 Passende Zeitfenster vorschlagen</li>
+        </ul>
+
+        <div class="tipp-box">
+            <strong>Tipp:</strong> Je genauer Ihr Prompt, desto besser das Ergebnis. Statt "Schreib eine E-Mail" besser: "Schreib eine freundliche E-Mail an Herrn M\u00fcller, in der ich den Termin am Freitag um 14 Uhr best\u00e4tige."
+        </div>
+
+        <h3>Tipps f\u00fcr den Einstieg</h3>
+        <ol>
+            <li><strong>Klein anfangen</strong> \u2014 Starten Sie mit einer App, die Sie t\u00e4glich nutzen</li>
+            <li><strong>Konkret formulieren</strong> \u2014 Je genauer der Prompt, desto besser das Ergebnis</li>
+            <li><strong>Iterieren</strong> \u2014 Verfeinern Sie die Antwort schrittweise ("Mach es k\u00fcrzer", "Formeller bitte")</li>
+            <li><strong>Kontext geben</strong> \u2014 Verweisen Sie auf Dateien oder Meetings</li>
+        </ol>
+
+        <h3>H\u00e4ufige Fragen</h3>
+        <p><strong>Brauche ich eine spezielle Lizenz?</strong><br>Ja, Copilot f\u00fcr MS 365 erfordert eine Copilot-Lizenz. Kl\u00e4ren Sie mit der IT, ob Sie Zugang haben.</p>
+        <p><strong>Sind meine Daten sicher?</strong><br>Copilot arbeitet innerhalb der MS 365-Sicherheitsgrenzen. Daten werden nicht f\u00fcr das Training des Modells verwendet.</p>
+        <p><strong>Funktioniert Copilot auf Deutsch?</strong><br>Ja, Copilot versteht und antwortet auf Deutsch.</p>
+
+        <div class="warnung-box">
+            <strong>Wichtig:</strong> Pr\u00fcfen Sie die Ergebnisse von Copilot immer! KI kann Fehler machen oder veraltete Informationen verwenden.
+        </div>
+
+        <div class="info-box">
+            <strong>SVG-Regelung:</strong> Auch f\u00fcr Copilot gilt die KI-Richtlinie der SVG. Geben Sie keine Passw\u00f6rter, Vertragsdaten oder sensible personenbezogene Daten ein. Bei KI-erstellten Inhalten f\u00fcr die externe Ver\u00f6ffentlichung gilt das <strong>Vier-Augen-Prinzip</strong> \u2014 eine zweite Person muss vor Ver\u00f6ffentlichung pr\u00fcfen.
+        </div>
+    `
+},
+
+'prompting-tipps': {
+    titel: 'Prompting-Tipps \u2014 Bessere Ergebnisse durch gute Prompts',
+    kategorie: 'K\u00fcnstliche Intelligenz',
+    katId: 'ki',
+    datum: 'April 2026',
+    lesezeit: '5 Min.',
+    inhalt: `
+        <div class="info-box"><strong>Kurz erkl\u00e4rt:</strong> Wenn Sie einer KI wie ChatGPT oder Copilot eine Frage stellen, nennt man das einen "Prompt". Je besser Sie Ihre Frage formulieren, desto besser ist die Antwort. Es ist ein bisschen wie beim Delegieren an einen neuen Kollegen: Je genauer Sie erkl\u00e4ren, was Sie brauchen, desto besser das Ergebnis. Hier lernen Sie die wichtigsten Tricks daf\u00fcr.</div>
+
+        <h3>Was ist ein Prompt?</h3>
+        <p>Ein Prompt ist die Anweisung oder Frage, die Sie an eine KI stellen. Die Qualit\u00e4t Ihres Prompts bestimmt ma\u00dfgeblich die Qualit\u00e4t der Antwort.</p>
+
+        <h3>Die 5 Bausteine eines guten Prompts</h3>
+        <table>
+            <tr><th>Baustein</th><th>Beschreibung</th><th>Beispiel</th></tr>
+            <tr><td><strong>Rolle</strong></td><td>Wer soll die KI sein?</td><td>"Du bist ein erfahrener Projektmanager"</td></tr>
+            <tr><td><strong>Aufgabe</strong></td><td>Was soll getan werden?</td><td>"Erstelle eine Agenda f\u00fcr ein Kick-off-Meeting"</td></tr>
+            <tr><td><strong>Kontext</strong></td><td>Hintergrundinformationen</td><td>"Das Projekt startet am 15.04., 8 Teilnehmer"</td></tr>
+            <tr><td><strong>Format</strong></td><td>Wie soll die Antwort aussehen?</td><td>"Als Tabelle mit Zeitslots"</td></tr>
+            <tr><td><strong>Einschr\u00e4nkungen</strong></td><td>Was soll vermieden werden?</td><td>"Maximal 60 Minuten, kein Smalltalk-Block"</td></tr>
+        </table>
+
+        <h3>Vorher / Nachher \u2014 Beispiel E-Mail</h3>
+        <div class="warnung-box"><strong>Schlecht:</strong> "Schreib eine Mail an den Kunden"</div>
+        <div class="info-box"><strong>Gut:</strong> "Schreibe eine freundliche, professionelle E-Mail an Herrn M\u00fcller (Firma XY). Bedanke dich f\u00fcr das Gespr\u00e4ch vom Montag und fasse die drei vereinbarten n\u00e4chsten Schritte zusammen: Angebot bis Freitag, Testphase ab Mai, Feedback-Termin im Juni. Maximal 150 W\u00f6rter."</div>
+
+        <h3>Vorher / Nachher \u2014 Text zusammenfassen</h3>
+        <div class="warnung-box"><strong>Schlecht:</strong> "Fasse das zusammen"</div>
+        <div class="info-box"><strong>Gut:</strong> "Fasse den folgenden Text in 5 Stichpunkten zusammen. Fokus auf Entscheidungen und offene Aufgaben. Zielgruppe: Teamleiter, die nicht am Meeting teilgenommen haben."</div>
+
+        <h3>Vorher / Nachher \u2014 Excel-Hilfe</h3>
+        <div class="warnung-box"><strong>Schlecht:</strong> "Wie geht SVERWEIS?"</div>
+        <div class="info-box"><strong>Gut:</strong> "Erkl\u00e4re mir die SVERWEIS-Funktion in Excel anhand eines konkreten Beispiels: Ich habe eine Kundenliste in Spalte A und Ums\u00e4tze in Spalte B. In einem zweiten Blatt m\u00f6chte ich den Umsatz eines bestimmten Kunden nachschlagen. Zeige mir die Formel und erkl\u00e4re jeden Parameter."</div>
+
+        <h3>N\u00fctzliche Prompt-Muster</h3>
+        <ul>
+            <li><strong>Schritt-f\u00fcr-Schritt:</strong> "Erkl\u00e4re mir Schritt f\u00fcr Schritt, wie ich..." \u2014 Gut f\u00fcr Anleitungen</li>
+            <li><strong>Pro &amp; Contra:</strong> "Nenne mir Vor- und Nachteile von..." \u2014 Gut f\u00fcr Entscheidungshilfen</li>
+            <li><strong>Vergleich:</strong> "Vergleiche X und Y in einer Tabelle nach den Kriterien..." \u2014 Gut f\u00fcr Toolauswahl</li>
+            <li><strong>Verbesserung:</strong> "Verbessere den folgenden Text. Mach ihn klarer und k\u00fcrzer..." \u2014 Gut f\u00fcr E-Mails</li>
+            <li><strong>Checkliste:</strong> "Erstelle eine Checkliste f\u00fcr..." \u2014 Gut f\u00fcr Prozesse</li>
+        </ul>
+
+        <h3>H\u00e4ufige Fehler vermeiden</h3>
+        <table>
+            <tr><th>Fehler</th><th>Besser</th></tr>
+            <tr><td>Zu vage ("Hilf mir mit Excel")</td><td>Konkret ("Erstelle eine Formel, die...")</td></tr>
+            <tr><td>Zu viel auf einmal</td><td>Eine Aufgabe pro Prompt</td></tr>
+            <tr><td>Keine Zielgruppe angeben</td><td>"Erkl\u00e4re es f\u00fcr Anf\u00e4nger / f\u00fcr Experten"</td></tr>
+            <tr><td>Ergebnis nicht nachpr\u00fcfen</td><td>Immer Fakten und Zahlen verifizieren</td></tr>
+            <tr><td>Personenbezogene Daten eingeben</td><td>Daten anonymisieren oder weglassen</td></tr>
+            <tr><td>Passw\u00f6rter/Vertragsdaten eingeben</td><td>Niemals sensible Daten in KI-Tools</td></tr>
+        </table>
+        <div class="warnung-box"><strong>SVG-Regel:</strong> Nutzen Sie nur von der IT freigegebene KI-Tools (siehe Anlage A im Intranet). Geben Sie keine personenbezogenen Daten, Passw\u00f6rter oder Vertragsinformationen ein. Bei KI-erstellten Inhalten f\u00fcr externe Ver\u00f6ffentlichung gilt das Vier-Augen-Prinzip.</div>
+    `
+},
+
+'outlook': {
+    titel: 'Microsoft Outlook \u2014 Tipps & Tricks',
+    kategorie: 'Microsoft 365',
+    katId: 'ms365',
+    datum: 'April 2026',
+    lesezeit: '6 Min.',
+    inhalt: `
+        <div class="info-box"><strong>Kurz erkl\u00e4rt:</strong> Outlook ist Ihr E-Mail-Programm und Kalender in einem. Hier empfangen und versenden Sie E-Mails, verwalten Ihre Termine und Kontakte. Wenn Sie eine E-Mail schreiben oder einen Termin planen m\u00f6chten \u2014 Outlook ist das richtige Programm daf\u00fcr.</div>
+
+        <h3>Tastenkombinationen</h3>
+        <p>Tastenkombinationen sind Abk\u00fcrzungen \u00fcber die Tastatur, mit denen Sie h\u00e4ufige Aktionen schneller ausf\u00fchren k\u00f6nnen, ohne zur Maus greifen zu m\u00fcssen.</p>
+        <table>
+            <tr><th>Aktion</th><th>Shortcut</th></tr>
+            <tr><td>Neue E-Mail</td><td><code>Strg + N</code></td></tr>
+            <tr><td>Antworten</td><td><code>Strg + R</code></td></tr>
+            <tr><td>Allen antworten</td><td><code>Strg + Umschalt + R</code></td></tr>
+            <tr><td>Weiterleiten</td><td><code>Strg + F</code></td></tr>
+            <tr><td>Senden</td><td><code>Strg + Enter</code></td></tr>
+            <tr><td>Suche</td><td><code>Strg + E</code></td></tr>
+            <tr><td>Wechsel zu Kalender</td><td><code>Strg + 2</code></td></tr>
+            <tr><td>Wechsel zu Mail</td><td><code>Strg + 1</code></td></tr>
+        </table>
+
+        <h3>Posteingang organisieren</h3>
+        <ul>
+            <li><strong>Regeln erstellen</strong> \u2014 Automatisch E-Mails in Ordner verschieben<br><em>Start &gt; Regeln &gt; Regel erstellen</em><br>Beispiel: Alle Mails von "newsletter@..." direkt in "Newsletter"-Ordner</li>
+            <li><strong>Schnellschritte</strong> \u2014 Mehrere Aktionen mit einem Klick (z.B. "Weiterleiten an Team + Archivieren")</li>
+            <li><strong>Kategorien</strong> \u2014 Farbliche Markierung nach Projekt oder Priorit\u00e4t</li>
+            <li><strong>Fokussierter Posteingang</strong> \u2014 Trennt wichtige von weniger wichtigen Mails</li>
+        </ul>
+
+        <h3>E-Mails effizienter schreiben</h3>
+        <ul>
+            <li><strong>Vorlagen</strong> speichern f\u00fcr wiederkehrende Mails</li>
+            <li><strong>Signatur</strong> f\u00fcr verschiedene Zwecke anlegen (intern/extern)</li>
+            <li><strong>Senden verz\u00f6gern</strong> \u2014 Optionen &gt; \u00dcbermittlung verz\u00f6gern (z.B. 1 Min., um Fehler zu korrigieren)</li>
+            <li><strong>@Erw\u00e4hnungen</strong> in Mails \u2014 Empf\u00e4nger wird automatisch auf CC gesetzt</li>
+        </ul>
+
+        <h3>Kalender-Tipps</h3>
+        <ul>
+            <li><strong>Arbeitszeiten festlegen</strong> \u2014 Einstellungen &gt; Kalender &gt; Arbeitszeit</li>
+            <li><strong>Terminserien</strong> f\u00fcr wiederkehrende Meetings</li>
+            <li><strong>Pufferzeiten</strong> \u2014 Outlook kann automatisch Puffer zwischen Meetings einplanen</li>
+            <li><strong>Raumfinder</strong> \u2014 Bei der Terminplanung direkt verf\u00fcgbare R\u00e4ume buchen</li>
+        </ul>
+
+        <h3>N\u00fctzliche Funktionen</h3>
+        <h4>Senden zur\u00fcckrufen</h4>
+        <p>Gesendete Elemente &gt; Mail \u00f6ffnen &gt; Nachricht &gt; Aktionen &gt; "Diese Nachricht zur\u00fcckrufen"</p>
+        <div class="info-box"><strong>Hinweis:</strong> Funktioniert nur bei internen Empf\u00e4ngern und wenn die Mail noch nicht gelesen wurde.</div>
+
+        <h4>Abwesenheitsnotiz</h4>
+        <p>Datei &gt; Automatische Antworten &gt; Zeitraum und Text festlegen</p>
+        <div class="tipp-box"><strong>Tipp:</strong> Legen Sie unterschiedliche Texte f\u00fcr interne und externe Empf\u00e4nger an.</div>
+
+        <h4>Suchordner</h4>
+        <p>Virtuelle Ordner, die automatisch Mails nach Kriterien sammeln \u2014 z.B. "Alle ungelesenen Mails der letzten 7 Tage".</p>
+
+        <h3>H\u00e4ufige Probleme</h3>
+        <h4>E-Mail kommt nicht an</h4>
+        <ol>
+            <li>Gesendete Elemente pr\u00fcfen \u2014 wurde die Mail wirklich gesendet?</li>
+            <li>Empf\u00e4ngeradresse auf Tippfehler pr\u00fcfen</li>
+            <li>Anhang zu gro\u00df? Limit liegt meist bei 25 MB \u2014 nutzen Sie OneDrive-Links</li>
+        </ol>
+        <h4>Kalender-Einladung wird nicht angezeigt</h4>
+        <ul>
+            <li>Pr\u00fcfen Sie den Ordner "Gel\u00f6schte Elemente"</li>
+            <li>Outlook neu starten</li>
+        </ul>
+    `
+},
+
+'teams': {
+    titel: 'Microsoft Teams \u2014 Tipps & Tricks',
+    kategorie: 'Microsoft 365',
+    katId: 'ms365',
+    datum: 'April 2026',
+    lesezeit: '6 Min.',
+    inhalt: `
+        <div class="info-box"><strong>Kurz erkl\u00e4rt:</strong> Teams ist das Programm f\u00fcr Videokonferenzen, Chats und Zusammenarbeit. Statt jemanden anzurufen oder eine E-Mail zu schreiben, k\u00f6nnen Sie in Teams direkt eine Nachricht schicken, ein Meeting starten oder gemeinsam an Dateien arbeiten. Es ist sozusagen das digitale B\u00fcro f\u00fcr Ihr Team.</div>
+
+        <h3>Tastenkombinationen</h3>
+        <p>Diese Abk\u00fcrzungen \u00fcber die Tastatur helfen Ihnen, h\u00e4ufige Aktionen schneller auszuf\u00fchren \u2014 besonders n\u00fctzlich w\u00e4hrend Meetings.</p>
+        <table>
+            <tr><th>Aktion</th><th>Shortcut</th></tr>
+            <tr><td>Suche \u00f6ffnen</td><td><code>Strg + E</code></td></tr>
+            <tr><td>Stummschalten (im Meeting)</td><td><code>Strg + Umschalt + M</code></td></tr>
+            <tr><td>Kamera ein/aus</td><td><code>Strg + Umschalt + O</code></td></tr>
+            <tr><td>Hand heben</td><td><code>Strg + Umschalt + K</code></td></tr>
+            <tr><td>Chat \u00f6ffnen</td><td><code>Strg + N</code></td></tr>
+            <tr><td>Bildschirm teilen</td><td><code>Strg + Umschalt + E</code></td></tr>
+        </table>
+
+        <h3>Meetings produktiver gestalten</h3>
+        <h4>Vor dem Meeting</h4>
+        <ul>
+            <li><strong>Agenda</strong> im Termin hinterlegen (im Textfeld der Einladung)</li>
+            <li><strong>Dateien vorab teilen</strong> \u00fcber den Meeting-Chat</li>
+            <li><strong>Teilnehmer begrenzen</strong> \u2014 nur wer wirklich dabei sein muss</li>
+        </ul>
+        <h4>W\u00e4hrend des Meetings</h4>
+        <ul>
+            <li><strong>Aufzeichnung starten</strong> \u2014 f\u00fcr Kollegen, die nicht dabei sein k\u00f6nnen</li>
+            <li><strong>Transkription aktivieren</strong> \u2014 automatisches Protokoll</li>
+            <li><strong>Breakout-R\u00e4ume</strong> f\u00fcr Gruppenarbeit nutzen</li>
+        </ul>
+        <div class="warnung-box"><strong>SVG-Regel f\u00fcr Aufzeichnungen:</strong>
+            <ul>
+                <li>Vor dem Start <strong>alle Teilnehmer informieren</strong> \u2014 keine heimlichen Aufzeichnungen!</li>
+                <li>Wenn auch nur <strong>eine Person widerspricht</strong>, darf nicht aufgezeichnet werden</li>
+                <li>Aufzeichnungen m\u00fcssen <strong>innerhalb von 30 Tagen gel\u00f6scht</strong> werden</li>
+                <li>Transkripte m\u00fcssen <strong>innerhalb von 90 Tagen gel\u00f6scht</strong> werden</li>
+                <li><strong>Nicht erlaubt</strong> bei: Personalgespr\u00e4chen, Jahresgespr\u00e4chen, Bewerbungsgespr\u00e4chen, Konfliktgespr\u00e4chen</li>
+            </ul>
+        </div>
+        <h4>Nach dem Meeting</h4>
+        <ul>
+            <li><strong>Zusammenfassung</strong> im Chat teilen oder Copilot erstellen lassen</li>
+            <li><strong>Aufgaben</strong> aus dem Meeting in Planner/To-Do \u00fcbertragen</li>
+            <li><strong>Aufzeichnung</strong> wird automatisch in OneDrive/SharePoint gespeichert</li>
+        </ul>
+
+        <h3>Chat-Tipps</h3>
+        <ul>
+            <li><strong>Wichtige Nachrichten</strong> mit <code>!</code> als dringend markieren</li>
+            <li><strong>Formatierung</strong> \u2014 <code>Strg + Umschalt + X</code> f\u00fcr erweiterte Formatierung</li>
+            <li><strong>Nachrichten speichern</strong> \u2014 Rechtsklick &gt; "Speichern"</li>
+            <li><strong>Nachricht an sich selbst</strong> \u2014 Eigenen Namen im Chat suchen f\u00fcr pers\u00f6nliche Notizen</li>
+        </ul>
+
+        <h3>Kan\u00e4le richtig nutzen</h3>
+        <ul>
+            <li><strong>Allgemein</strong> \u2014 Nur f\u00fcr teamweite Ank\u00fcndigungen</li>
+            <li><strong>Themenkan\u00e4le</strong> \u2014 Pro Projekt oder Thema einen eigenen Kanal</li>
+            <li><strong>@Erw\u00e4hnungen</strong> sparsam einsetzen \u2014 @Team nur bei wirklich wichtigen Infos</li>
+            <li><strong>Kanalbenachrichtigungen</strong> individuell anpassen (Rechtsklick auf Kanal)</li>
+        </ul>
+        <div class="tipp-box"><strong>Tipp:</strong> Nutzen Sie "Nachricht an sich selbst" als pers\u00f6nlichen Notizblock direkt in Teams.</div>
+
+        <h3>H\u00e4ufige Probleme</h3>
+        <h4>Audio funktioniert nicht im Meeting</h4>
+        <ol>
+            <li>Pr\u00fcfen Sie die Audioquelle unten links im Meeting-Fenster</li>
+            <li>Einstellungen &gt; Ger\u00e4te &gt; richtiges Mikrofon/Lautsprecher ausw\u00e4hlen</li>
+            <li>Browser-Berechtigungen pr\u00fcfen (bei Web-Version)</li>
+        </ol>
+        <h4>Status zeigt "Abwesend" obwohl ich da bin</h4>
+        <p>Teams setzt den Status nach 5 Min. Inaktivit\u00e4t automatisch. Manuell setzen: Profilbild &gt; Status &gt; "Verf\u00fcgbar"</p>
+        <h4>Dateien lassen sich nicht \u00f6ffnen</h4>
+        <ul>
+            <li>Versuchen Sie "In App \u00f6ffnen" statt "Im Browser \u00f6ffnen"</li>
+            <li>Cache leeren: Einstellungen &gt; Allgemein &gt; Cache leeren</li>
+        </ul>
+    `
+},
+
+'excel': {
+    titel: 'Microsoft Excel \u2014 Tipps & Tricks',
+    kategorie: 'Microsoft 365',
+    katId: 'ms365',
+    datum: 'April 2026',
+    lesezeit: '7 Min.',
+    inhalt: `
+        <div class="info-box"><strong>Kurz erkl\u00e4rt:</strong> Excel ist das Tabellenprogramm von Microsoft. Damit k\u00f6nnen Sie Zahlen ordnen, Berechnungen durchf\u00fchren und Daten \u00fcbersichtlich darstellen. Ob Kostenaufstellung, Teilnehmerliste oder Auswertung \u2014 wenn Sie mit Zahlen oder Listen arbeiten, ist Excel das richtige Werkzeug.</div>
+
+        <h3>Tastenkombinationen</h3>
+        <table>
+            <tr><th>Aktion</th><th>Shortcut</th></tr>
+            <tr><td>Zelle bearbeiten</td><td><code>F2</code></td></tr>
+            <tr><td>Zeile/Spalte einf\u00fcgen</td><td><code>Strg + +</code></td></tr>
+            <tr><td>Zeile/Spalte l\u00f6schen</td><td><code>Strg + -</code></td></tr>
+            <tr><td>Letzte Aktion wiederholen</td><td><code>Strg + Y</code></td></tr>
+            <tr><td>Zum Tabellenende springen</td><td><code>Strg + Ende</code></td></tr>
+            <tr><td>Alles markieren</td><td><code>Strg + A</code></td></tr>
+            <tr><td>AutoSumme</td><td><code>Alt + =</code></td></tr>
+            <tr><td>Suchen &amp; Ersetzen</td><td><code>Strg + H</code></td></tr>
+        </table>
+
+        <h3>Die wichtigsten Formeln \u2014 Grundlagen</h3>
+        <table>
+            <tr><th>Formel</th><th>Beschreibung</th><th>Beispiel</th></tr>
+            <tr><td><code>=SUMME(A1:A10)</code></td><td>Summe eines Bereichs</td><td>Ums\u00e4tze addieren</td></tr>
+            <tr><td><code>=MITTELWERT(A1:A10)</code></td><td>Durchschnitt</td><td>Durchschnittsumsatz</td></tr>
+            <tr><td><code>=ANZAHL(A1:A10)</code></td><td>Zellen mit Zahlen z\u00e4hlen</td><td>Anzahl Eintr\u00e4ge</td></tr>
+            <tr><td><code>=ANZAHL2(A1:A10)</code></td><td>Nicht-leere Zellen z\u00e4hlen</td><td>Ausgef\u00fcllte Felder</td></tr>
+            <tr><td><code>=MIN()</code> / <code>=MAX()</code></td><td>Kleinster / Gr\u00f6\u00dfter Wert</td><td>H\u00f6chster Umsatz</td></tr>
+        </table>
+
+        <h3>Nachschlagen &amp; Verweisen</h3>
+        <table>
+            <tr><th>Formel</th><th>Beschreibung</th></tr>
+            <tr><td><code>=SVERWEIS(Suchkriterium; Bereich; Spalte; FALSCH)</code></td><td>Wert in einer Tabelle nachschlagen</td></tr>
+            <tr><td><code>=XVERWEIS(Suchkriterium; Suchbereich; R\u00fcckgabebereich)</code></td><td>Moderner Ersatz f\u00fcr SVERWEIS (empfohlen!)</td></tr>
+            <tr><td><code>=INDEX(Bereich; VERGLEICH(Suchwert; Suchbereich; 0))</code></td><td>Flexible Alternative zu SVERWEIS</td></tr>
+        </table>
+        <div class="tipp-box"><strong>Tipp:</strong> Verwenden Sie nach M\u00f6glichkeit <code>XVERWEIS</code> statt <code>SVERWEIS</code> \u2014 er ist flexibler und einfacher zu nutzen.</div>
+
+        <h3>Logik &amp; Bedingungen</h3>
+        <table>
+            <tr><th>Formel</th><th>Beschreibung</th></tr>
+            <tr><td><code>=WENN(Bedingung; Dann; Sonst)</code></td><td>Bedingte Ausgabe</td></tr>
+            <tr><td><code>=WENNS(Bed1; Wert1; Bed2; Wert2)</code></td><td>Mehrere Bedingungen</td></tr>
+            <tr><td><code>=SUMMEWINN(Bereich; Kriterium; Summebereich)</code></td><td>Bedingte Summe</td></tr>
+            <tr><td><code>=Z\u00c4HLENWENN(Bereich; Kriterium)</code></td><td>Bedingt z\u00e4hlen</td></tr>
+        </table>
+
+        <h3>Daten aufbereiten</h3>
+        <h4>Tabellen formatieren</h4>
+        <p>Daten markieren &gt; <code>Strg + T</code> &gt; Als Tabelle formatieren</p>
+        <div class="info-box"><strong>Vorteile:</strong> Automatische Filter, strukturierte Verweise, automatische Erweiterung bei neuen Daten.</div>
+
+        <h4>Pivot-Tabellen</h4>
+        <ol>
+            <li>Daten markieren &gt; Einf\u00fcgen &gt; PivotTable</li>
+            <li>Felder in Zeilen, Spalten und Werte ziehen</li>
+            <li>Ideal f\u00fcr: Zusammenfassungen, Vergleiche, Auswertungen</li>
+        </ol>
+
+        <h4>Daten bereinigen</h4>
+        <ul>
+            <li><strong>Text in Spalten</strong> \u2014 Daten &gt; Text in Spalten (z.B. CSV aufteilen)</li>
+            <li><strong>Duplikate entfernen</strong> \u2014 Daten &gt; Duplikate entfernen</li>
+            <li><strong>Suchen &amp; Ersetzen</strong> \u2014 <code>Strg + H</code> (z.B. Leerzeichen entfernen)</li>
+        </ul>
+
+        <h3>Diagramme</h3>
+        <p>Daten markieren &gt; Einf\u00fcgen &gt; Empfohlene Diagramme</p>
+        <ul>
+            <li><strong>S\u00e4ulendiagramm</strong> \u2014 Vergleiche zwischen Kategorien</li>
+            <li><strong>Liniendiagramm</strong> \u2014 Trends \u00fcber Zeit</li>
+            <li><strong>Kreisdiagramm</strong> \u2014 Anteile am Ganzen (max. 5\u20136 Kategorien)</li>
+            <li><strong>Balkendiagramm</strong> \u2014 Wie S\u00e4ulen, aber horizontal (gut bei langen Beschriftungen)</li>
+        </ul>
+
+        <h3>H\u00e4ufige Probleme</h3>
+        <h4>Formel zeigt #NV an</h4>
+        <p>SVERWEIS/XVERWEIS findet den Suchwert nicht. Pr\u00fcfen Sie auf Leerzeichen oder unterschiedliche Formate (Text vs. Zahl).</p>
+        <h4>Zahlen werden als Text gespeichert</h4>
+        <p>Gr\u00fcnes Dreieck in der Zelle = Zahl als Text gespeichert. L\u00f6sung: Spalte markieren &gt; Daten &gt; Text in Spalten &gt; Fertig stellen.</p>
+        <h4>Formel wird als Text angezeigt</h4>
+        <p>Zellformat auf "Standard" \u00e4ndern. Pr\u00fcfen Sie, ob ein Apostroph vor dem <code>=</code> steht.</p>
+    `
+},
+
+'word': {
+    titel: 'Microsoft Word \u2014 Tipps & Tricks',
+    kategorie: 'Microsoft 365',
+    katId: 'ms365',
+    datum: 'April 2026',
+    lesezeit: '8 Min.',
+    inhalt: `
+        <div class="info-box"><strong>Kurz erkl\u00e4rt:</strong> Word ist das Textverarbeitungsprogramm von Microsoft \u2014 also das Programm, in dem Sie Briefe, Berichte, Protokolle oder andere Dokumente schreiben. Vielleicht nutzen Sie es schon t\u00e4glich, aber es steckt viel mehr drin als nur Tippen: Vorlagen, automatische Inhaltsverzeichnisse und Serienbriefe k\u00f6nnen Ihnen viel Arbeit abnehmen.</div>
+
+        <h3>Tastenkombinationen \u2014 Formatierung</h3>
+        <table>
+            <tr><th>Aktion</th><th>Shortcut</th></tr>
+            <tr><td>Fett</td><td><code>Strg + B</code></td></tr>
+            <tr><td>Kursiv</td><td><code>Strg + I</code></td></tr>
+            <tr><td>Unterstrichen</td><td><code>Strg + U</code></td></tr>
+            <tr><td>Formatierung entfernen</td><td><code>Strg + Leertaste</code></td></tr>
+            <tr><td>Absatz zentrieren</td><td><code>Strg + E</code></td></tr>
+            <tr><td>Blocksatz</td><td><code>Strg + J</code></td></tr>
+            <tr><td>Suchen &amp; Ersetzen</td><td><code>Strg + H</code></td></tr>
+            <tr><td>Absatzmarken anzeigen</td><td><code>Strg + Umschalt + *</code></td></tr>
+        </table>
+
+        <h3>Vorlagen nutzen und erstellen</h3>
+        <h4>Vorhandene Vorlagen verwenden</h4>
+        <p>Datei &gt; Neu &gt; Vorlage ausw\u00e4hlen. Firmenvorlagen finden Sie unter den <strong>Freigegebenen Vorlagen</strong> oder im Intranet.</p>
+        <h4>Eigene Vorlage erstellen</h4>
+        <ol>
+            <li>Dokument mit gew\u00fcnschtem Layout und Formatierung erstellen</li>
+            <li>Datei &gt; Speichern unter &gt; Dateityp: <strong>Word-Vorlage (.dotx)</strong></li>
+            <li>Die Vorlage erscheint beim n\u00e4chsten Mal unter "Pers\u00f6nlich"</li>
+        </ol>
+        <div class="tipp-box"><strong>Tipp:</strong> Platzhaltertexte in Vorlagen nutzen, z.B. "[Firmenname hier einf\u00fcgen]" \u2014 so vergisst man keine Felder.</div>
+
+        <h3>Formatvorlagen richtig einsetzen</h3>
+        <table>
+            <tr><th>Formatvorlage</th><th>Verwendung</th></tr>
+            <tr><td>\u00dcberschrift 1</td><td>Hauptkapitel</td></tr>
+            <tr><td>\u00dcberschrift 2</td><td>Unterkapitel</td></tr>
+            <tr><td>\u00dcberschrift 3</td><td>Abschnitte innerhalb eines Unterkapitels</td></tr>
+            <tr><td>Standard</td><td>Normaler Flie\u00dftext</td></tr>
+            <tr><td>Listenabsatz</td><td>Aufz\u00e4hlungen und nummerierte Listen</td></tr>
+        </table>
+        <div class="info-box"><strong>Vorteile:</strong> Einheitliches Aussehen, automatisches Inhaltsverzeichnis aus \u00dcberschriften, schnelle Anpassung \u2014 Formatvorlage \u00e4ndern wirkt sich auf alle Stellen aus.</div>
+
+        <h3>Inhaltsverzeichnis automatisch erstellen</h3>
+        <ol>
+            <li>Alle \u00dcberschriften mit den Formatvorlagen <strong>\u00dcberschrift 1, 2, 3</strong> formatieren</li>
+            <li>Cursor an die Stelle setzen, wo das Verzeichnis erscheinen soll</li>
+            <li><strong>Referenzen &gt; Inhaltsverzeichnis &gt; Automatisches Verzeichnis</strong></li>
+            <li>Aktualisieren: Rechtsklick auf das Verzeichnis &gt; <strong>Felder aktualisieren</strong></li>
+        </ol>
+
+        <h3>\u00c4nderungsnachverfolgung und Kommentare</h3>
+        <ul>
+            <li><strong>\u00c4nderungen nachverfolgen:</strong> \u00dcberpr\u00fcfen &gt; \u00c4nderungen nachverfolgen (<code>Strg + Umschalt + E</code>)</li>
+            <li><strong>Kommentare:</strong> Text markieren &gt; \u00dcberpr\u00fcfen &gt; Neuer Kommentar (<code>Strg + Alt + M</code>)</li>
+            <li><strong>Vor dem Versenden:</strong> \u00dcberpr\u00fcfen &gt; Alle \u00c4nderungen annehmen</li>
+        </ul>
+
+        <h3>Serienbriefe \u2014 Grundlagen</h3>
+        <ol>
+            <li><strong>Sendungen &gt; Seriendruck starten &gt; Briefe</strong></li>
+            <li><strong>Empf\u00e4nger ausw\u00e4hlen</strong> \u2014 z.B. aus einer Excel-Liste</li>
+            <li><strong>Seriendruckfelder einf\u00fcgen</strong> \u2014 z.B. Vorname, Nachname, Adresse</li>
+            <li><strong>Vorschau</strong> \u2014 Sendungen &gt; Vorschau Ergebnisse</li>
+            <li><strong>Fertig stellen</strong> \u2014 Sendungen &gt; Fertig stellen und zusammenf\u00fchren</li>
+        </ol>
+
+        <h3>Tipps f\u00fcr saubere Formatierung</h3>
+        <ul>
+            <li><strong>Gesch\u00fctztes Leerzeichen</strong> \u2014 <code>Strg + Umschalt + Leertaste</code></li>
+            <li><strong>Seitenumbruch</strong> \u2014 <code>Strg + Enter</code> statt vieler Leerzeilen</li>
+            <li><strong>Einf\u00fcgen ohne Formatierung</strong> \u2014 <code>Strg + Umschalt + V</code></li>
+        </ul>
+
+        <h3>H\u00e4ufige Probleme</h3>
+        <h4>Formatierung springt oder ver\u00e4ndert sich</h4>
+        <p>Ursache: Text aus anderer Quelle mit Formatierung eingef\u00fcgt. L\u00f6sung: <code>Strg + Umschalt + V</code> oder Text markieren &gt; <code>Strg + Leertaste</code>.</p>
+        <h4>Bilder verschieben sich beim Bearbeiten</h4>
+        <p>Rechtsklick auf Bild &gt; Textumbruch &gt; <strong>Mit Text in Zeile</strong></p>
+        <h4>Seiten lassen sich nicht l\u00f6schen</h4>
+        <p>Absatzmarken anzeigen (<code>Strg + Umschalt + *</code>) \u2014 leeren Absatz markieren &gt; Schriftgr\u00f6\u00dfe auf 1 setzen.</p>
+    `
+},
+
+'powerpoint': {
+    titel: 'Microsoft PowerPoint \u2014 Tipps & Tricks',
+    kategorie: 'Microsoft 365', katId: 'ms365', datum: 'April 2026', lesezeit: '7 Min.',
+    inhalt: `
+        <div class="info-box"><strong>Kurz erkl\u00e4rt:</strong> PowerPoint ist das Programm f\u00fcr Pr\u00e4sentationen. Damit erstellen Sie Folien mit Text, Bildern und Diagrammen \u2014 zum Beispiel f\u00fcr Meetings, Schulungen oder Vortr\u00e4ge.</div>
+        <h3>Tastenkombinationen</h3>
+        <table><tr><th>Aktion</th><th>Shortcut</th></tr><tr><td>Neue Folie</td><td><code>Strg + M</code></td></tr><tr><td>Folie duplizieren</td><td><code>Strg + D</code></td></tr><tr><td>Gruppieren</td><td><code>Strg + Umschalt + G</code></td></tr><tr><td>Pr\u00e4sentation starten</td><td><code>F5</code></td></tr><tr><td>Ab aktueller Folie</td><td><code>Umschalt + F5</code></td></tr><tr><td>Schwarzer Bildschirm</td><td><code>B</code></td></tr><tr><td>Laserpointer</td><td><code>Strg + Maustaste</code></td></tr></table>
+        <h3>Folienmaster und Layouts</h3>
+        <ol><li><strong>Ansicht &gt; Folienmaster</strong></li><li>Oberste Folie = Hauptmaster</li><li>Anpassungen vornehmen</li><li><strong>Masteransicht schlie\u00dfen</strong></li></ol>
+        <div class="tipp-box"><strong>Tipp:</strong> \u00c4ndern Sie nie einzelne Folien manuell, wenn es \u00fcber den Folienmaster geht.</div>
+        <h3>Animationen und \u00dcberg\u00e4nge</h3>
+        <ul><li><strong>Folien\u00fcberg\u00e4nge:</strong> \u00dcberg\u00e4nge &gt; Effekt w\u00e4hlen. Empfehlung: <strong>Morphen</strong></li><li><strong>Animationen:</strong> Objekt markieren &gt; Animationen &gt; Effekt w\u00e4hlen</li></ul>
+        <div class="warnung-box"><strong>Goldene Regel:</strong> Weniger ist mehr! Max. 1\u20132 dezente Animationen pro Folie.</div>
+        <h3>Referentenansicht</h3>
+        <p>Bildschirmpr\u00e4sentation &gt; Referentenansicht verwenden. Sie sehen: aktuelle Folie, n\u00e4chste Folie, Notizen, Timer.</p>
+        <h3>Pr\u00e4sentation exportieren</h3>
+        <ul><li><strong>Als PDF:</strong> Datei &gt; Exportieren &gt; PDF</li><li><strong>Als Video:</strong> Datei &gt; Exportieren &gt; Video erstellen</li><li><strong>Als Bilder:</strong> Datei &gt; Speichern unter &gt; PNG/JPEG</li></ul>
+        <h3>Tipps f\u00fcr gute Pr\u00e4sentationen</h3>
+        <table><tr><th>Prinzip</th><th>Empfehlung</th></tr><tr><td>Weniger Text</td><td>Max. 5\u20137 Zeilen pro Folie</td></tr><tr><td>Gro\u00dfe Schrift</td><td>Mindestens 24pt</td></tr><tr><td>Kontrast</td><td>Dunkle Schrift auf hellem Hintergrund</td></tr><tr><td>Ein Gedanke pro Folie</td><td>Lieber mehr Folien</td></tr></table>
+        <h3>H\u00e4ufige Probleme</h3>
+        <h4>Schriften auf anderem PC anders</h4><p>Datei &gt; Optionen &gt; Speichern &gt; "Schriftarten einbetten"</p>
+        <h4>Datei zu gro\u00df</h4><p>Bilder komprimieren: Bild markieren &gt; Bildformat &gt; Bilder komprimieren</p>
+    `
+},
+
+'onedrive': {
+    titel: 'Microsoft OneDrive \u2014 Tipps & Tricks',
+    kategorie: 'Microsoft 365', katId: 'ms365', datum: 'April 2026', lesezeit: '7 Min.',
+    inhalt: `
+        <div class="info-box"><strong>Kurz erkl\u00e4rt:</strong> OneDrive ist Ihre pers\u00f6nliche Ablage in der Cloud \u2014 stellen Sie es sich wie einen USB-Stick vor, auf den Sie von \u00fcberall zugreifen k\u00f6nnen.</div>
+        <h3>OneDrive vs. SharePoint</h3>
+        <table><tr><th></th><th>OneDrive</th><th>SharePoint</th></tr><tr><td><strong>Zweck</strong></td><td>Pers\u00f6nlicher Cloud-Speicher</td><td>Team- und Projektspeicher</td></tr><tr><td><strong>Zugriff</strong></td><td>Nur Sie (bis Sie teilen)</td><td>Alle Teammitglieder</td></tr><tr><td><strong>Speicher</strong></td><td>1 TB pro Benutzer</td><td>Vom Unternehmen verwaltet</td></tr></table>
+        <div class="info-box"><strong>Faustregel:</strong> Was nur Sie betrifft \u2192 OneDrive. Was das Team braucht \u2192 SharePoint.</div>
+        <h3>Sync-Status erkennen</h3>
+        <table><tr><th>Symbol</th><th>Bedeutung</th></tr><tr><td>Gr\u00fcner Haken (ausgef\u00fcllt)</td><td>Lokal gespeichert und synchronisiert</td></tr><tr><td>Gr\u00fcner Haken (Umriss)</td><td>Nur online</td></tr><tr><td>Blaue Pfeile</td><td>Synchronisation l\u00e4uft</td></tr><tr><td>Rotes X</td><td>Sync-Fehler</td></tr><tr><td>Schloss</td><td>Von jemand anderem bearbeitet</td></tr></table>
+        <h3>Dateien teilen</h3>
+        <ol><li>Rechtsklick &gt; <strong>Teilen</strong></li><li>Name/E-Mail eingeben</li><li>Berechtigung w\u00e4hlen</li><li>Senden</li></ol>
+        <div class="tipp-box"><strong>Tipp:</strong> Links statt Anh\u00e4nge teilen \u2014 so arbeiten alle an derselben Version.</div>
+        <h3>Versionsverlauf</h3>
+        <p>Rechtsklick &gt; Versionsverlauf. OneDrive speichert bis zu <strong>500 Versionen</strong>.</p>
+        <h3>Files On-Demand</h3>
+        <table><tr><th>Aktion</th><th>So geht's</th></tr><tr><td>Immer offline</td><td>Rechtsklick &gt; "Immer auf diesem Ger\u00e4t beibehalten"</td></tr><tr><td>Nur online</td><td>Rechtsklick &gt; "Speicherplatz freigeben"</td></tr></table>
+        <div class="tipp-box"><strong>Tipp:</strong> Vor Dienstreisen wichtige Ordner offline verf\u00fcgbar machen.</div>
+        <h3>H\u00e4ufige Probleme</h3>
+        <h4>Sync-Konflikte</h4><p>Beide Versionen \u00f6ffnen, \u00c4nderungen zusammenf\u00fchren, Konflikt-Datei l\u00f6schen.</p>
+        <h4>Speicher voll</h4><p>OneDrive im Browser &gt; Einstellungen &gt; Speicher verwalten. Papierkorb leeren.</p>
+    `
+},
+
+'onenote': {
+    titel: 'Microsoft OneNote \u2014 Tipps & Tricks',
+    kategorie: 'Microsoft 365', katId: 'ms365', datum: 'April 2026', lesezeit: '6 Min.',
+    inhalt: `
+        <div class="info-box"><strong>Kurz erkl\u00e4rt:</strong> OneNote ist ein digitales Notizbuch. Statt auf Papier zu schreiben, sammeln Sie hier Ihre Notizen, Ideen, Meeting-Protokolle und To-Do-Listen \u2014 alles an einem Ort, durchsuchbar und von jedem Ger\u00e4t aus erreichbar.</div>
+        <h3>Aufbau verstehen</h3>
+        <table><tr><th>Ebene</th><th>Beschreibung</th><th>Beispiel</th></tr><tr><td><strong>Notizbuch</strong></td><td>Das gesamte Buch</td><td>"Projektnotizen"</td></tr><tr><td><strong>Abschnitt</strong></td><td>Kapitel/Reiter</td><td>"Sprint-Meetings"</td></tr><tr><td><strong>Seite</strong></td><td>Einzelne Seite</td><td>"Meeting 15.03."</td></tr></table>
+        <h3>Tastenkombinationen</h3>
+        <table><tr><th>Aktion</th><th>Shortcut</th></tr><tr><td>Neue Seite</td><td><code>Strg + N</code></td></tr><tr><td>Neuer Abschnitt</td><td><code>Strg + T</code></td></tr><tr><td>Suche</td><td><code>Strg + E</code></td></tr><tr><td>Aufgaben-Tag</td><td><code>Strg + 1</code></td></tr><tr><td>Wichtig-Tag</td><td><code>Strg + 2</code></td></tr></table>
+        <h3>Notizen taggen</h3>
+        <ul><li><code>Strg + 1</code> \u2014 <strong>Aufgabe</strong></li><li><code>Strg + 2</code> \u2014 <strong>Wichtig</strong></li><li><code>Strg + 3</code> \u2014 <strong>Frage</strong></li></ul>
+        <div class="tipp-box"><strong>Tipp:</strong> Start &gt; Tags suchen zeigt alle getaggten Elemente notizbuch\u00fcbergreifend.</div>
+        <h3>Inhalte einf\u00fcgen</h3>
+        <ul><li><strong>Screenshots:</strong> <code>Win + Umschalt + S</code>, dann einf\u00fcgen</li><li><strong>Text aus Bildern:</strong> Rechtsklick &gt; "Text aus Bild kopieren" (OCR)</li><li><strong>Audio aufzeichnen:</strong> Einf\u00fcgen &gt; Audio aufzeichnen</li></ul>
+        <h3>Integration mit Outlook</h3>
+        <ul><li><strong>Meeting-Notizen:</strong> Start &gt; Besprechungsdetails</li><li><strong>E-Mail an OneNote:</strong> Weiterleiten an <code>me@onenote.com</code></li></ul>
+        <h3>H\u00e4ufige Probleme</h3>
+        <h4>Synchronisiert nicht</h4><p>Manuell: <code>Umschalt + F9</code>. Notizbuch schlie\u00dfen und \u00f6ffnen.</p>
+    `
+},
+
+'sharepoint': {
+    titel: 'Microsoft SharePoint \u2014 Tipps & Tricks',
+    kategorie: 'Microsoft 365', katId: 'ms365', datum: 'April 2026', lesezeit: '8 Min.',
+    inhalt: `
+        <div class="info-box"><strong>Kurz erkl\u00e4rt:</strong> SharePoint ist die gemeinsame Dateiablage f\u00fcr Ihr Team oder Ihre Abteilung. Statt Dateien per E-Mail hin- und herzuschicken, legen Sie sie zentral in SharePoint ab \u2014 so hat jeder immer die aktuellste Version.</div>
+        <h3>SharePoint vs. OneDrive vs. Teams-Dateien</h3>
+        <table><tr><th></th><th>SharePoint</th><th>OneDrive</th><th>Teams-Dateien</th></tr><tr><td><strong>Zweck</strong></td><td>Gemeinsame Teamablage</td><td>Pers\u00f6nliche Ablage</td><td>Schneller Dateiaustausch</td></tr><tr><td><strong>Wann nutzen?</strong></td><td>Abteilungsdokumente</td><td>Eigene Entw\u00fcrfe</td><td>Dateien zu Gespr\u00e4chen</td></tr></table>
+        <h3>Dokumentenbibliotheken</h3>
+        <ul><li><strong>Versionsverlauf</strong> \u2014 Jede \u00c4nderung wird gespeichert</li><li><strong>Gleichzeitige Bearbeitung</strong></li><li><strong>Metadaten (Spalten)</strong> statt tiefer Ordnerstrukturen</li><li><strong>Ansichten</strong> \u2014 Verschiedene Darstellungen</li></ul>
+        <h3>Metadaten und Spalten</h3>
+        <table><tr><th>Typ</th><th>Einsatz</th><th>Beispiel</th></tr><tr><td>Auswahl</td><td>Feste Werte</td><td>Status: Entwurf / Freigegeben</td></tr><tr><td>Datum</td><td>Termine</td><td>G\u00fcltig bis</td></tr><tr><td>Person</td><td>Zust\u00e4ndigkeit</td><td>Verantwortlicher</td></tr></table>
+        <div class="tipp-box"><strong>Vorteil gegen\u00fcber Ordnern:</strong> Filtern, Gruppieren, Sortieren \u2014 eine Datei kann mehrere Kategorien haben.</div>
+        <h3>Berechtigungen</h3>
+        <table><tr><th>Rolle</th><th>Rechte</th></tr><tr><td>Besitzer</td><td>Volle Kontrolle</td></tr><tr><td>Mitglieder</td><td>Erstellen, bearbeiten, l\u00f6schen</td></tr><tr><td>Besucher</td><td>Nur lesen</td></tr></table>
+        <div class="warnung-box"><strong>Wichtig:</strong> Teilen-Links erzeugen ggf. neue Berechtigungen \u2014 regelm\u00e4\u00dfig pr\u00fcfen.</div>
+        <h3>Suche effektiv nutzen</h3>
+        <ul><li><code>"Projektbericht Q3"</code> \u2014 exakte Formulierung</li><li><code>author:"Max Mustermann"</code> \u2014 nach Autor</li></ul>
+        <h3>H\u00e4ufige Probleme</h3>
+        <h4>Datei nicht bearbeitbar</h4><p>Berechtigung pr\u00fcfen. Ausgecheckt? Im Browser \u00f6ffnen.</p>
+        <h4>Sync funktioniert nicht</h4><p>OneDrive-Icon pr\u00fcfen. Pausieren und fortsetzen.</p>
+    `
+},
+
+'planner-todo': {
+    titel: 'Microsoft Planner & To Do \u2014 Tipps & Tricks',
+    kategorie: 'Microsoft 365', katId: 'ms365', datum: 'April 2026', lesezeit: '6 Min.',
+    inhalt: `
+        <div class="info-box"><strong>Kurz erkl\u00e4rt:</strong> Planner und To Do helfen Ihnen, Aufgaben im Blick zu behalten. <strong>To Do</strong> ist Ihre pers\u00f6nliche Aufgabenliste. <strong>Planner</strong> ist f\u00fcr Teamarbeit: Aufgaben verteilen und sehen, wer woran arbeitet.</div>
+        <h3>Planner vs. To Do</h3>
+        <table><tr><th></th><th>Planner</th><th>To Do</th></tr><tr><td><strong>Zweck</strong></td><td>Team-Aufgaben</td><td>Pers\u00f6nliche Aufgaben</td></tr><tr><td><strong>Zuweisen</strong></td><td>Ja</td><td>Nein</td></tr><tr><td><strong>Ansichten</strong></td><td>Board, Diagramm, Zeitplan</td><td>Listen, Mein Tag</td></tr></table>
+        <div class="info-box"><strong>Faustregel:</strong> Teamaufgaben = Planner. Pers\u00f6nliche = To Do. Beide verbunden: Planner-Aufgaben erscheinen in To Do.</div>
+        <h3>Planner \u2014 Buckets und Aufgaben</h3>
+        <ul><li><strong>Zugewiesene Personen</strong></li><li><strong>F\u00e4lligkeitsdatum</strong></li><li><strong>Priorit\u00e4t</strong></li><li><strong>Labels</strong> (bis zu 25 Farben)</li><li><strong>Checkliste</strong></li><li><strong>Anh\u00e4nge &amp; Kommentare</strong></li></ul>
+        <h3>To Do \u2014 "Mein Tag"</h3>
+        <ol><li>Jeden Morgen "Mein Tag" \u00f6ffnen</li><li>Auf Vorschl\u00e4ge klicken</li><li>Aufgaben f\u00fcr heute ausw\u00e4hlen</li></ol>
+        <h3>Planner in Teams</h3>
+        <ol><li>Im Kanal auf <strong>+</strong></li><li><strong>Tasks von Planner und To Do</strong></li><li>Plan ausw\u00e4hlen oder erstellen</li></ol>
+        <h3>Tipps</h3>
+        <ul><li>Jede Aufgabe hat einen Hauptverantwortlichen</li><li>F\u00e4lligkeitsdaten setzen</li><li>Checklisten nutzen</li><li>Kommentare statt E-Mails</li></ul>
+    `
+},
+
+'lists': {
+    titel: 'Microsoft Lists \u2014 Tipps & Tricks',
+    kategorie: 'Microsoft 365', katId: 'ms365', datum: 'April 2026', lesezeit: '6 Min.',
+    inhalt: `
+        <div class="info-box"><strong>Kurz erkl\u00e4rt:</strong> Microsoft Lists ist wie eine intelligente Tabelle, in der Ihr Team gemeinsam Informationen pflegen kann \u2014 z.B. Ger\u00e4telisten, Projektaufgaben oder Urlaubsantr\u00e4ge.</div>
+        <h3>Lists vs. Excel</h3>
+        <table><tr><th></th><th>Lists</th><th>Excel</th></tr><tr><td><strong>St\u00e4rke</strong></td><td>Ansichten, Regeln, Zusammenarbeit</td><td>Formeln, Diagramme, Pivot</td></tr><tr><td><strong>Ideal f\u00fcr</strong></td><td>Aufgaben, Tracker, Inventar</td><td>Finanzdaten, Analysen</td></tr></table>
+        <h3>Liste erstellen</h3>
+        <ol><li>Lists-App \u00f6ffnen</li><li>+ Neue Liste</li><li>Leere Liste, Vorlage, aus Excel oder vorhandener Liste</li></ol>
+        <h3>Spaltentypen</h3>
+        <table><tr><th>Typ</th><th>Beschreibung</th><th>Beispiel</th></tr><tr><td>Auswahl</td><td>Dropdown</td><td>Status</td></tr><tr><td>Datum</td><td>Datumsauswahl</td><td>F\u00e4lligkeit</td></tr><tr><td>Person</td><td>MS 365-Benutzer</td><td>Zust\u00e4ndig</td></tr><tr><td>Ja/Nein</td><td>Kontrollk\u00e4stchen</td><td>Erledigt</td></tr></table>
+        <h3>Ansichten</h3>
+        <table><tr><th>Ansicht</th><th>Ideal f\u00fcr</th></tr><tr><td>Raster</td><td>Daten bearbeiten</td></tr><tr><td>Galerie</td><td>Inventar, Kontakte</td></tr><tr><td>Board</td><td>Status-Tracking</td></tr><tr><td>Kalender</td><td>Fristen, Events</td></tr></table>
+        <h3>Regeln und Benachrichtigungen</h3>
+        <p>Automatisieren &gt; Regel erstellen: z.B. "Benachrichtige bei Status \u00c4nderung"</p>
+        <h3>Lists in Teams</h3>
+        <ol><li>Im Kanal <strong>+</strong></li><li><strong>Lists</strong> ausw\u00e4hlen</li><li>Vorhandene Liste oder neue erstellen</li></ol>
+    `
+},
+
+'forms': {
+    titel: 'Microsoft Forms \u2014 Tipps & Tricks',
+    kategorie: 'Microsoft 365', katId: 'ms365', datum: 'April 2026', lesezeit: '6 Min.',
+    inhalt: `
+        <div class="info-box"><strong>Kurz erkl\u00e4rt:</strong> Mit Microsoft Forms erstellen Sie schnell Online-Umfragen oder Anmeldeformulare \u2014 ganz ohne Programmierkenntnisse.</div>
+        <h3>Formulare vs. Quizze</h3>
+        <table><tr><th></th><th>Formular</th><th>Quiz</th></tr><tr><td><strong>Zweck</strong></td><td>Daten sammeln</td><td>Wissenstests</td></tr><tr><td><strong>Punkte</strong></td><td>Nein</td><td>Ja</td></tr></table>
+        <h3>Fragetypen</h3>
+        <table><tr><th>Fragetyp</th><th>Einsatz</th></tr><tr><td>Auswahl</td><td>"Welche Abteilung?"</td></tr><tr><td>Text</td><td>"Ihr Verbesserungsvorschlag?"</td></tr><tr><td>Bewertung</td><td>"Wie zufrieden?" (Sterne)</td></tr><tr><td>Datum</td><td>"Wunschtermin?"</td></tr><tr><td>Rangfolge</td><td>"Priorisieren" (Drag&Drop)</td></tr><tr><td>Likert</td><td>Matrix mit Skala</td></tr></table>
+        <div class="tipp-box"><strong>Tipp:</strong> Bei Auswahlfragen "Sonstige" aktivieren f\u00fcr eigene Antworten.</div>
+        <h3>Verzweigungen</h3>
+        <ol><li>Formular erstellen</li><li>"..." &gt; "Verzweigung"</li><li>Pro Antwort Sprungziel festlegen</li></ol>
+        <h3>Formulare teilen</h3>
+        <table><tr><th>Methode</th><th>Geeignet f\u00fcr</th></tr><tr><td>Link</td><td>E-Mail, Chat</td></tr><tr><td>QR-Code</td><td>Aush\u00e4nge</td></tr><tr><td>Einbetten</td><td>SharePoint</td></tr></table>
+        <h3>Ergebnisse auswerten</h3>
+        <ul><li><strong>Echtzeit:</strong> Reiter "Antworten"</li><li><strong>Excel-Export:</strong> "In Excel \u00f6ffnen"</li></ul>
+    `
+},
+
+'bookings': {
+    titel: 'Microsoft Bookings \u2014 Tipps & Tricks',
+    kategorie: 'Microsoft 365', katId: 'ms365', datum: 'April 2026', lesezeit: '5 Min.',
+    inhalt: `
+        <div class="info-box"><strong>Kurz erkl\u00e4rt:</strong> Mit Bookings erstellen Sie eine Webseite, \u00fcber die andere Personen selbstst\u00e4ndig Termine bei Ihnen buchen k\u00f6nnen \u2014 \u00e4hnlich wie bei einem Online-Terminplaner.</div>
+        <h3>Buchungsseite einrichten</h3>
+        <ol><li>Bookings &gt; "Buchungsseite erstellen"</li><li>Name vergeben (z.B. "IT-Sprechstunde SVG")</li><li>Firmenname, Logo, Gesch\u00e4ftszeiten</li><li>Design anpassen</li></ol>
+        <h3>Dienste definieren</h3>
+        <table><tr><th>Einstellung</th><th>Beispiel</th></tr><tr><td>Name</td><td>"IT-Beratung"</td></tr><tr><td>Dauer</td><td>30 Min.</td></tr><tr><td>Pufferzeit</td><td>15 Min.</td></tr><tr><td>Max. Teilnehmer</td><td>1 oder 10</td></tr><tr><td>Ort</td><td>"Teams-Besprechung"</td></tr></table>
+        <div class="tipp-box"><strong>Tipp:</strong> 10\u201315 Min. Pufferzeit einplanen.</div>
+        <h3>Buchungsseite teilen</h3>
+        <table><tr><th>Methode</th><th>Geeignet f\u00fcr</th></tr><tr><td>Link</td><td>E-Mail-Signatur</td></tr><tr><td>Einbetten</td><td>Intranet, SharePoint</td></tr><tr><td>QR-Code</td><td>Aush\u00e4nge</td></tr></table>
+        <h3>Automatische Benachrichtigungen</h3>
+        <ul><li>Best\u00e4tigung nach Buchung</li><li>Erinnerung 24h vorher</li><li>Absage-Best\u00e4tigung</li></ul>
+        <h3>Integration mit Teams</h3>
+        <p>"Teams-Besprechung hinzuf\u00fcgen" aktivieren \u2014 Link wird automatisch eingef\u00fcgt.</p>
+    `
+},
+
+'chrome-tipps': {
+    titel: 'Google Chrome \u2014 Tipps & Tricks',
+    kategorie: 'Browser & Web', katId: 'browser', datum: 'April 2026', lesezeit: '5 Min.',
+    inhalt: `
+        <div class="info-box"><strong>Kurz erkl\u00e4rt:</strong> Ein Browser ist das Programm, mit dem Sie Internetseiten aufrufen. Google Chrome ist einer der beliebtesten Browser.</div>
+        <h3>Tastenkombinationen</h3>
+        <table><tr><th>Aktion</th><th>Shortcut</th></tr><tr><td>Neuer Tab</td><td><code>Strg + T</code></td></tr><tr><td>Tab schlie\u00dfen</td><td><code>Strg + W</code></td></tr><tr><td>Tab wiederherstellen</td><td><code>Strg + Umschalt + T</code></td></tr><tr><td>Adressleiste</td><td><code>Strg + L</code></td></tr><tr><td>Lesezeichen</td><td><code>Strg + D</code></td></tr><tr><td>Verlauf</td><td><code>Strg + H</code></td></tr><tr><td>Privat</td><td><code>Strg + Umschalt + N</code></td></tr><tr><td>Suchen</td><td><code>Strg + F</code></td></tr></table>
+        <h3>N\u00fctzliche Einstellungen</h3>
+        <h4>Startseite</h4><p>Einstellungen &gt; Beim Start &gt; Bestimmte Seite \u00f6ffnen</p>
+        <h4>Datenschutz</h4><ul><li>Drittanbieter-Cookies blockieren</li><li>Browserdaten l\u00f6schen: <code>Strg + Umschalt + Entf</code></li></ul>
+        <h3>Erweiterungen</h3>
+        <table><tr><th>Erweiterung</th><th>Nutzen</th></tr><tr><td>uBlock Origin</td><td>Werbeblocker</td></tr><tr><td>OneNote Web Clipper</td><td>Webseiten speichern</td></tr><tr><td>Microsoft Editor</td><td>Rechtschreibpr\u00fcfung</td></tr></table>
+        <div class="warnung-box"><strong>SVG-Regel:</strong> Erweiterungen d\u00fcrfen <strong>nur von der IT-Abteilung</strong> installiert werden.</div>
+        <h3>Tab-Management</h3>
+        <ul><li><strong>Tab-Gruppen</strong> \u2014 Rechtsklick &gt; "Zu Gruppe hinzuf\u00fcgen"</li><li><strong>Tab anpinnen</strong> \u2014 Rechtsklick &gt; "Anpinnen"</li></ul>
+        <h3>H\u00e4ufige Probleme</h3>
+        <h4>Chrome langsam</h4><ol><li>Tabs schlie\u00dfen</li><li>Erweiterungen pr\u00fcfen</li><li>Cache leeren</li><li>Aktualisieren</li></ol>
+    `
+},
+
+'edge-tipps': {
+    titel: 'Microsoft Edge \u2014 Tipps & Tricks',
+    kategorie: 'Browser & Web', katId: 'browser', datum: 'April 2026', lesezeit: '6 Min.',
+    inhalt: `
+        <div class="info-box"><strong>Kurz erkl\u00e4rt:</strong> Microsoft Edge ist der Browser auf jedem Windows-PC. Er ist besonders gut mit Microsoft 365 verzahnt.</div>
+        <h3>Tastenkombinationen</h3>
+        <table><tr><th>Aktion</th><th>Shortcut</th></tr><tr><td>Neuer Tab</td><td><code>Strg + T</code></td></tr><tr><td>Tab schlie\u00dfen</td><td><code>Strg + W</code></td></tr><tr><td>Tab wiederherstellen</td><td><code>Strg + Umschalt + T</code></td></tr><tr><td>Favoriten</td><td><code>Strg + D</code></td></tr><tr><td>Vertikale Tabs</td><td><code>Strg + Umschalt + ,</code></td></tr><tr><td>Seitenleiste</td><td><code>Strg + Umschalt + /</code></td></tr><tr><td>Webaufnahme</td><td><code>Strg + Umschalt + S</code></td></tr><tr><td>InPrivate</td><td><code>Strg + Umschalt + N</code></td></tr></table>
+        <h3>N\u00fctzliche Einstellungen</h3>
+        <h4>Datenschutz</h4><ul><li>Tracking-Schutz auf "Ausgewogen" oder "Streng"</li><li>Browserdaten l\u00f6schen: <code>Strg + Umschalt + Entf</code></li></ul>
+        <h3>Erweiterungen</h3>
+        <div class="warnung-box"><strong>SVG-Regel:</strong> Erweiterungen d\u00fcrfen <strong>nur von der IT-Abteilung</strong> installiert werden.</div>
+        <h3>Edge-spezifisch</h3>
+        <ul><li><strong>Sammlungen</strong> \u2014 <code>Strg + Umschalt + Y</code> \u2014 Webseiten thematisch sammeln</li><li><strong>PDF-Reader</strong> \u2014 direkt im Browser</li><li><strong>Seitenleiste</strong> \u2014 Copilot, Rechner, Outlook</li></ul>
+        <h3>MS 365 Integration</h3>
+        <ul><li>Office-Dateien direkt \u00f6ffnen</li><li>Copilot in der Seitenleiste</li><li>Profil-Synchronisierung</li></ul>
+        <h3>IE-Modus</h3>
+        <p>F\u00fcr Legacy-Anwendungen: Einstellungen &gt; Standardbrowser &gt; IE-Modus aktivieren.</p>
+    `
+},
+
+'firefox-tipps': {
+    titel: 'Mozilla Firefox \u2014 Tipps & Tricks',
+    kategorie: 'Browser & Web', katId: 'browser', datum: 'April 2026', lesezeit: '5 Min.',
+    inhalt: `
+        <div class="info-box"><strong>Kurz erkl\u00e4rt:</strong> Firefox ist ein kostenloser Browser mit besonderem Fokus auf Datenschutz, betrieben von der gemeinn\u00fctzigen Mozilla-Stiftung.</div>
+        <h3>Tastenkombinationen</h3>
+        <table><tr><th>Aktion</th><th>Shortcut</th></tr><tr><td>Neuer Tab</td><td><code>Strg + T</code></td></tr><tr><td>Tab schlie\u00dfen</td><td><code>Strg + W</code></td></tr><tr><td>Tab wiederherstellen</td><td><code>Strg + Umschalt + T</code></td></tr><tr><td>Lesezeichen</td><td><code>Strg + D</code></td></tr><tr><td>Lesezeichen-Leiste</td><td><code>Strg + B</code></td></tr><tr><td>Privates Fenster</td><td><code>Strg + Umschalt + P</code></td></tr></table>
+        <h3>Datenschutz-Einstellungen</h3>
+        <ul><li>Schutz vor Aktivit\u00e4tenverfolgung auf "Streng"</li><li>DNS \u00fcber HTTPS aktivieren</li></ul>
+        <h3>Erweiterungen</h3>
+        <div class="warnung-box"><strong>SVG-Regel:</strong> Erweiterungen d\u00fcrfen <strong>nur von der IT-Abteilung</strong> installiert werden.</div>
+        <h3>Datenschutz-Vorteile</h3>
+        <ul><li>Total Cookie Protection \u2014 Cookies pro Website isoliert</li><li>Kein Tracking durch Browser-Hersteller</li><li>Fingerprinting-Schutz</li></ul>
+        <h3>H\u00e4ufige Probleme</h3>
+        <h4>Firefox langsam</h4><ol><li>Tabs schlie\u00dfen</li><li>Erweiterungen pr\u00fcfen: <code>about:addons</code></li><li>Firefox bereinigen: <code>about:support</code></li></ol>
+    `
+},
+
+'sicher-phishing': {
+    titel: 'Phishing-Mails erkennen',
+    kategorie: 'IT-Sicherheit', katId: 'sicherheit', datum: 'April 2026', lesezeit: '5 Min.',
+    inhalt: `
+        <div class="warnung-box"><strong>Warum ist das wichtig?</strong> Phishing-Mails sind die h\u00e4ufigste Methode, mit der Kriminelle versuchen, in Firmennetzwerke einzudringen. Dieser Artikel hilft Ihnen, solche Mails zu erkennen.</div>
+        <h3>Was ist Phishing?</h3>
+        <p>Phishing bezeichnet betr\u00fcgerische E-Mails, die versuchen, Sie zur Preisgabe sensibler Daten zu verleiten oder Schadsoftware zu installieren.</p>
+        <div class="info-box"><strong>SVG-Hinweis:</strong> Alle E-Mails von <strong>externen Absendern</strong> werden automatisch mit einer <strong>roten Warnmarkierung</strong> versehen.</div>
+        <h3>Typische Merkmale</h3>
+        <ul><li><strong>Dringlichkeit</strong> \u2014 "Ihr Konto wird gesperrt!"</li><li><strong>Unbekannter Absender</strong> \u2014 z.B. <code>support@micros0ft.com</code></li><li><strong>Unpersönliche Anrede</strong></li><li><strong>Rechtschreibfehler</strong></li><li><strong>Verd\u00e4chtige Links</strong> \u2014 Maus dr\u00fcber halten (nicht klicken!)</li><li><strong>Unerwartete Anh\u00e4nge</strong></li></ul>
+        <div class="warnung-box"><strong>Regel Nr. 1:</strong> Unsicher? NICHT klicken. Mail an IT weiterleiten.</div>
+        <h3>Was tun?</h3>
+        <ol><li>Nicht klicken</li><li>Absender pr\u00fcfen</li><li>IT informieren</li><li>L\u00f6schen</li></ol>
+        <h3>Beispiele</h3>
+        <table><tr><th>Betreff</th><th>Warum verd\u00e4chtig?</th></tr><tr><td>"Ihre Rechnung #38291"</td><td>Nichts bestellt</td></tr><tr><td>"Passwort l\u00e4uft ab"</td><td>IT schickt das nicht so</td></tr><tr><td>"Paket nicht zugestellt"</td><td>Falscher Link</td></tr><tr><td>"Dringend: \u00dcberweisung"</td><td>CEO-Fraud</td></tr></table>
+        <div class="tipp-box"><strong>Tipp:</strong> Absender \u00fcber anderen Kanal kontaktieren (Telefon, pers\u00f6nlich).</div>
+        <h3>Ich habe geklickt \u2014 was jetzt?</h3>
+        <ol><li><strong>Sofort IT informieren</strong></li><li>Passwort \u00e4ndern</li><li>PC nicht ausschalten</li><li>Keine Panik \u2014 schnell handeln</li></ol>
+    `
+},
+
+'sicher-passwort': {
+    titel: 'Sichere Passw\u00f6rter erstellen',
+    kategorie: 'IT-Sicherheit', katId: 'sicherheit', datum: 'April 2026', lesezeit: '4 Min.',
+    inhalt: `
+        <div class="warnung-box"><strong>Warum ist das wichtig?</strong> Ihr Passwort ist wie der Schl\u00fcssel zu Ihrer digitalen Wohnung. Ein einfaches Passwort knacken Angreifer in Sekunden.</div>
+        <h3>Regeln f\u00fcr sichere Passw\u00f6rter</h3>
+        <ul><li><strong>Mindestens 13 Zeichen</strong> (SVG-Vorgabe)</li><li>Gro\u00df-/Kleinbuchstaben, Zahlen, Sonderzeichen mischen</li><li>Keine pers\u00f6nlichen Infos</li><li>Keine W\u00f6rterbuchwörter</li><li>F\u00fcr jeden Dienst ein eigenes Passwort</li></ul>
+        <div class="warnung-box"><strong>Niemals:</strong> Passw\u00f6rter auf Notizzetteln, in Excel oder unverschl\u00fcsselt!</div>
+        <h3>Methode: Passphrase</h3>
+        <div class="info-box"><strong>Beispiel:</strong> <code>Bello-frisst-3mal-Lachs!</code> (25 Zeichen, leicht merkbar)</div>
+        <div class="info-box"><strong>SVG-Regel:</strong> Kein regelm\u00e4\u00dfiger Passwortwechsel n\u00f6tig. Nur bei Verdacht \u00e4ndern. Initiale Passw\u00f6rter sofort \u00e4ndern.</div>
+        <h3>Passwortmanager</h3>
+        <p>Speichert alle Passw\u00f6rter verschl\u00fcsselt. Nur ein Master-Passwort merken. IT fragen.</p>
+        <div class="tipp-box"><strong>Tipp:</strong> MFA zus\u00e4tzlich aktivieren!</div>
+        <h3>Checkliste</h3>
+        <table><tr><th>Kriterium</th><th>Check</th></tr><tr><td>Min. 13 Zeichen</td><td>SVG-Vorgabe</td></tr><tr><td>Nicht wiederverwendet</td><td>Jeder Dienst einzigartig</td></tr><tr><td>Keine pers. Daten</td><td>Name, Geburtstag tabu</td></tr><tr><td>Im Passwortmanager</td><td>Nicht auf Papier</td></tr><tr><td>MFA aktiviert</td><td>Zweiter Faktor</td></tr></table>
+    `
+},
+
+'sicher-mfa': {
+    titel: 'Multi-Faktor-Authentifizierung (MFA)',
+    kategorie: 'IT-Sicherheit', katId: 'sicherheit', datum: 'April 2026', lesezeit: '4 Min.',
+    inhalt: `
+        <div class="info-box"><strong>Kurz erkl\u00e4rt:</strong> MFA bedeutet, dass Sie sich nicht nur mit Passwort, sondern zus\u00e4tzlich mit dem Handy best\u00e4tigen. Dauert 3 Sekunden \u2014 macht Angreifern das Leben fast unm\u00f6glich.</div>
+        <h3>Die drei Faktoren</h3>
+        <table><tr><th>Faktor</th><th>Beschreibung</th><th>Beispiel</th></tr><tr><td><strong>Wissen</strong></td><td>Was Sie wissen</td><td>Passwort, PIN</td></tr><tr><td><strong>Besitz</strong></td><td>Was Sie haben</td><td>Authenticator-App, Hardware-Token</td></tr><tr><td><strong>Biometrie</strong></td><td>Was Sie sind</td><td>Fingerabdruck, Gesicht</td></tr></table>
+        <h3>MFA bei MS 365 einrichten</h3>
+        <ol><li><strong>Microsoft Authenticator</strong>-App installieren</li><li><strong>mysignins.microsoft.com</strong> &gt; Sicherheitsinformationen</li><li>"Methode hinzuf\u00fcgen" &gt; "Authenticator-App"</li><li>QR-Code scannen</li><li>Testbenachrichtigung best\u00e4tigen</li></ol>
+        <div class="info-box"><strong>Im Alltag:</strong> Passwort eingeben \u2192 Push auf Handy \u2192 einmal tippen \u2192 fertig. 3 Sekunden.</div>
+        <h3>Warum so wichtig?</h3>
+        <ul><li><strong>99,9%</strong> der Kontoangriffe verhindert</li><li>Sch\u00fctzt auch bei Phishing</li><li>Bei vielen Diensten Pflicht</li></ul>
+        <h3>H\u00e4ufige Fragen</h3>
+        <p><strong>Handy nicht dabei?</strong> Mobilfunknummer als Fallback oder Hardware-Token von der IT.</p>
+        <p><strong>Bei jeder Anmeldung?</strong> Nein, vertrauensw\u00fcrdige Ger\u00e4te werden gemerkt.</p>
+        <div class="warnung-box"><strong>SVG-Pflicht:</strong> MFA ist f\u00fcr alle MS 365-Konten <strong>verpflichtend</strong>. Zugelassen: <strong>Authenticator-App</strong> oder <strong>Hardware-Token</strong>.</div>
+    `
+},
+
+'hw-drucker': {
+    titel: 'Drucker einrichten & Probleme l\u00f6sen',
+    kategorie: 'Hardware & Ger\u00e4te', katId: 'hardware', datum: 'April 2026', lesezeit: '4 Min.',
+    inhalt: `
+        <div class="info-box"><strong>Kurz erkl\u00e4rt:</strong> Die meisten B\u00fcro-Drucker sind Netzwerkdrucker \u2014 nicht direkt an Ihren PC angeschlossen, sondern \u00fcber das Firmennetzwerk erreichbar.</div>
+        <h3>Netzwerkdrucker hinzuf\u00fcgen</h3>
+        <ol><li><code>Win + I</code> &gt; Bluetooth &amp; Ger\u00e4te &gt; Drucker</li><li>"Ger\u00e4t hinzuf\u00fcgen"</li><li>Drucker ausw\u00e4hlen oder IP eingeben</li><li>Nicht gefunden? IT fragen.</li></ol>
+        <div class="info-box"><strong>Tipp:</strong> IT kann den Pfad nennen, z.B. <code>\\\\server\\druckername</code></div>
+        <h3>Standarddrucker</h3>
+        <p>Einstellungen &gt; Drucker &gt; "Als Standard festlegen"</p>
+        <div class="tipp-box"><strong>Tipp:</strong> "Windows verwaltet Standarddrucker" deaktivieren.</div>
+        <h3>H\u00e4ufige Probleme</h3>
+        <h4>Druckauftrag h\u00e4ngt</h4><ol><li>Druckerwarteschlange \u00f6ffnen</li><li>Alle Auftr\u00e4ge l\u00f6schen</li></ol>
+        <h4>Druckt nicht</h4><ul><li>Eingeschaltet? Online?</li><li>Papier eingelegt?</li><li>Richtiger Drucker ausgew\u00e4hlt?</li></ul>
+        <h4>Schlechte Qualit\u00e4t</h4><ul><li>Druckqualit\u00e4t auf "Hoch"</li><li>Toner pr\u00fcfen</li><li>Reinigungsprogramm</li></ul>
+    `
+},
+
+'hw-monitor': {
+    titel: 'Mehrere Monitore einrichten',
+    kategorie: 'Hardware & Ger\u00e4te', katId: 'hardware', datum: 'April 2026', lesezeit: '3 Min.',
+    inhalt: `
+        <div class="info-box"><strong>Kurz erkl\u00e4rt:</strong> Ein zweiter Monitor verdoppelt Ihren Arbeitsplatz auf dem Bildschirm.</div>
+        <h3>Monitor anschlie\u00dfen</h3>
+        <ol><li>Kabel verbinden (HDMI, DisplayPort, USB-C)</li><li>Windows erkennt automatisch</li><li>Falls nicht: <code>Win + P</code></li></ol>
+        <h3>Anzeigemodus</h3>
+        <table><tr><th>Modus</th><th>Beschreibung</th><th>Wann?</th></tr><tr><td><strong>Duplizieren</strong></td><td>Gleiches Bild</td><td>Pr\u00e4sentationen</td></tr><tr><td><strong>Erweitern</strong></td><td>Desktop \u00fcber beide</td><td>Normales Arbeiten</td></tr><tr><td><strong>Nur zweiter</strong></td><td>Nur extern</td><td>Docking-Station</td></tr></table>
+        <div class="tipp-box"><strong>Empfehlung:</strong> "Erweitern" f\u00fcr den Alltag.</div>
+        <h3>Feineinstellungen</h3>
+        <ul><li><strong>Anordnung</strong> \u2014 Drag&Drop wie physisch aufgestellt</li><li><strong>Skalierung</strong> \u2014 125% oder 150% bei hoher Aufl\u00f6sung</li></ul>
+        <h3>Probleme</h3>
+        <h4>Nicht erkannt</h4><ul><li>Kabel pr\u00fcfen</li><li>Anderen Anschluss testen</li><li>"Erkennen" klicken</li></ul>
+    `
+},
+
+'hw-headset': {
+    titel: 'Headset & Kamera f\u00fcr Teams einrichten',
+    kategorie: 'Hardware & Ger\u00e4te', katId: 'hardware', datum: 'April 2026', lesezeit: '3 Min.',
+    inhalt: `
+        <div class="info-box"><strong>Kurz erkl\u00e4rt:</strong> F\u00fcr Teams-Videokonferenzen brauchen Sie ein Headset und eventuell eine Webcam. Ohne Headset h\u00f6ren Ihre Gespr\u00e4chspartner oft Echo.</div>
+        <h3>Headset einrichten</h3>
+        <ol><li>USB einstecken oder Bluetooth koppeln</li><li>In Teams: Einstellungen &gt; Ger\u00e4te</li><li>Headset als Lautsprecher/Mikrofon w\u00e4hlen</li><li>Testanruf starten</li></ol>
+        <div class="tipp-box"><strong>Tipp:</strong> Vor wichtigen Meetings immer Testanruf.</div>
+        <h3>Webcam einrichten</h3>
+        <ul><li>USB-Webcam anschlie\u00dfen</li><li>Teams &gt; Einstellungen &gt; Kamera ausw\u00e4hlen</li><li>Lichtquelle vor Ihnen, Kamera auf Augenh\u00f6he</li></ul>
+        <h3>Probleme</h3>
+        <h4>Mikrofon nicht erkannt</h4><ol><li>Datenschutz &gt; Mikrofon &gt; Zugriff erlauben</li><li>In Teams richtiges Ger\u00e4t w\u00e4hlen</li><li>Anderen USB-Port testen</li></ol>
+        <h4>Echo</h4><p>Headset statt Laptop-Lautsprecher verwenden.</p>
+        <h4>Kamera schwarz</h4><ul><li>Kamera-Abdeckung offen?</li><li>Datenschutz &gt; Kamera &gt; Zugriff erlauben</li></ul>
+    `
+},
+
+'tipp-shortcuts': {
+    titel: 'Die wichtigsten Windows-Tastenkombinationen',
+    kategorie: 'Tipps & Tricks', katId: 'tipps', datum: 'April 2026', lesezeit: '4 Min.',
+    inhalt: `
+        <div class="info-box"><strong>Kurz erkl\u00e4rt:</strong> Tastenkombinationen ("Shortcuts") sind Abk\u00fcrzungen, mit denen Sie Aktionen schneller ausf\u00fchren. Schon 3\u20134 Shortcuts k\u00f6nnen Ihren Alltag deutlich beschleunigen.</div>
+        <h3>Allgemein</h3>
+        <table><tr><th>Shortcut</th><th>Aktion</th></tr><tr><td><code>Win + E</code></td><td>Explorer</td></tr><tr><td><code>Win + D</code></td><td>Desktop anzeigen</td></tr><tr><td><code>Win + L</code></td><td>PC sperren</td></tr><tr><td><code>Win + I</code></td><td>Einstellungen</td></tr><tr><td><code>Win + V</code></td><td>Zwischenablage-Verlauf</td></tr><tr><td><code>Win + .</code></td><td>Emoji-Picker</td></tr><tr><td><code>Win + Shift + S</code></td><td>Screenshot</td></tr><tr><td><code>Alt + Tab</code></td><td>Fenster wechseln</td></tr><tr><td><code>Alt + F4</code></td><td>Fenster schlie\u00dfen</td></tr></table>
+        <h3>Fenstermanagement</h3>
+        <table><tr><th>Shortcut</th><th>Aktion</th></tr><tr><td><code>Win + Pfeil links/rechts</code></td><td>Fenster andocken</td></tr><tr><td><code>Win + Pfeil oben</code></td><td>Maximieren</td></tr><tr><td><code>Win + Tab</code></td><td>Virtuelle Desktops</td></tr><tr><td><code>Win + Strg + D</code></td><td>Neuer virtueller Desktop</td></tr></table>
+        <div class="tipp-box"><strong>Game-Changer:</strong> <code>Win + V</code> \u2014 mehrere Texte nacheinander kopieren und einzeln einf\u00fcgen!</div>
+        <h3>Text bearbeiten</h3>
+        <table><tr><th>Shortcut</th><th>Aktion</th></tr><tr><td><code>Strg + A</code></td><td>Alles markieren</td></tr><tr><td><code>Strg + C/X/V</code></td><td>Kopieren/Ausschneiden/Einf\u00fcgen</td></tr><tr><td><code>Strg + Z</code></td><td>R\u00fcckg\u00e4ngig</td></tr><tr><td><code>Strg + Y</code></td><td>Wiederholen</td></tr><tr><td><code>Strg + F</code></td><td>Suchen</td></tr></table>
+        <h3>Explorer</h3>
+        <table><tr><th>Shortcut</th><th>Aktion</th></tr><tr><td><code>F2</code></td><td>Umbenennen</td></tr><tr><td><code>Strg + Shift + N</code></td><td>Neuer Ordner</td></tr></table>
+    `
+},
+
+'tipp-screenshot': {
+    titel: 'Screenshots erstellen \u2014 alle Methoden',
+    kategorie: 'Tipps & Tricks', katId: 'tipps', datum: 'April 2026', lesezeit: '3 Min.',
+    inhalt: `
+        <div class="info-box"><strong>Kurz erkl\u00e4rt:</strong> Ein Screenshot ist ein Foto von Ihrem Bildschirm. Praktisch f\u00fcr Fehlermeldungen an die IT oder Ausschnitte in E-Mails.</div>
+        <h3>Methoden</h3>
+        <table><tr><th>Methode</th><th>Shortcut</th><th>Was passiert?</th></tr><tr><td>Snipping Tool (empfohlen!)</td><td><code>Win + Shift + S</code></td><td>Bereich frei ausw\u00e4hlen</td></tr><tr><td>Gesamter Bildschirm</td><td><code>Druck</code></td><td>In Zwischenablage</td></tr><tr><td>Aktives Fenster</td><td><code>Alt + Druck</code></td><td>Nur aktives Fenster</td></tr><tr><td>Auto speichern</td><td><code>Win + Druck</code></td><td>Als Datei gespeichert</td></tr></table>
+        <div class="tipp-box"><strong>Empfehlung:</strong> <code>Win + Shift + S</code> ist die vielseitigste Methode.</div>
+        <h3>Snipping Tool im Detail</h3>
+        <ol><li><code>Win + Shift + S</code></li><li>Modus w\u00e4hlen: Rechteck, Freiform, Fenster, Vollbild</li><li>Wird in Zwischenablage kopiert</li><li>Einf\u00fcgen mit <code>Strg + V</code></li><li>Klick auf Benachrichtigung zum Bearbeiten</li></ol>
+        <h3>Speicherorte</h3>
+        <table><tr><th>Methode</th><th>Speicherort</th></tr><tr><td><code>Win + Druck</code></td><td><code>Bilder\\Screenshots</code></td></tr><tr><td><code>Win + Shift + S</code></td><td>Nur Zwischenablage</td></tr></table>
+        <div class="info-box"><strong>In Teams:</strong> Screenshots direkt mit <code>Strg + V</code> in den Chat einf\u00fcgen.</div>
+    `
+},
+
+'tipp-schnellstart': {
+    titel: 'PC schneller machen \u2014 einfache Schritte',
+    kategorie: 'Tipps & Tricks', katId: 'tipps', datum: 'April 2026', lesezeit: '4 Min.',
+    inhalt: `
+        <div class="info-box"><strong>Kurz erkl\u00e4rt:</strong> Wenn Ihr PC langsam ist, muss das nicht an einem Defekt liegen. Oft reichen einfache Schritte, um ihn schneller zu machen.</div>
+        <h3>Sofort-Ma\u00dfnahmen</h3>
+        <ol><li><strong>PC neu starten</strong> \u2014 "Herunterfahren" ist nicht dasselbe!</li><li><strong>Programme schlie\u00dfen</strong></li><li><strong>Browser-Tabs reduzieren</strong></li></ol>
+        <h3>Autostart aufr\u00e4umen</h3>
+        <ol><li><code>Strg + Umschalt + Esc</code> (Task-Manager)</li><li>Reiter "Autostart"</li><li>Unn\u00f6tige Programme deaktivieren</li></ol>
+        <div class="warnung-box"><strong>Vorsicht:</strong> Nur bekannte Programme deaktivieren. Antivirenprogramme aktiviert lassen.</div>
+        <h3>Speicherplatz freigeben</h3>
+        <ol><li><code>Win + I</code> &gt; System &gt; Speicher</li><li>Tempor\u00e4re Dateien aufr\u00e4umen</li><li>Papierkorb leeren</li><li>Downloads-Ordner pr\u00fcfen</li></ol>
+        <div class="tipp-box"><strong>Tipp:</strong> "Speicheroptimierung" aktivieren f\u00fcr automatisches Aufr\u00e4umen.</div>
+        <h3>Updates</h3>
+        <ul><li><code>Win + I</code> &gt; Windows Update &gt; "Nach Updates suchen"</li><li>Nach gro\u00dfem Update: PC neu starten</li></ul>
+        <h3>Wann IT kontaktieren?</h3>
+        <ul><li>Dauerhaft langsam trotz allem</li><li>Programme frieren regelm\u00e4\u00dfig ein</li><li>Festplatte fast voll</li><li>PC \u00e4lter als 4\u20135 Jahre</li></ul>
+    `
+}
+
+};
+
+// ===== NAVIGATION =====
+function showHome() {
+    document.getElementById('mainSection').style.display = '';
+    document.getElementById('heroSection').style.display = '';
+    document.getElementById('catNav').style.display = '';
+    document.getElementById('articleWrap').classList.remove('show');
+    document.getElementById('searchResults').classList.remove('show');
+    document.getElementById('searchInput').value = '';
+    document.getElementById('searchCount').textContent = '';
+    document.getElementById('btnBack').classList.remove('show');
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.cat-btn').classList.add('active');
+    document.querySelectorAll('.cat-card').forEach(c => { c.style.display = ''; });
+    document.getElementById('sectionLabel').textContent = 'Alle Themen';
+    document.getElementById('sectionCount').textContent = '6 Kategorien \u00b7 27 Artikel';
+    document.getElementById('progressBar').style.width = '0%';
+}
+
+function showArticle(id) {
+    const a = artikel[id];
+    if (!a) return;
+    document.getElementById('mainSection').style.display = 'none';
+    document.getElementById('heroSection').style.display = 'none';
+    document.getElementById('catNav').style.display = 'none';
+    document.getElementById('searchResults').classList.remove('show');
+    document.getElementById('articleWrap').classList.add('show');
+    document.getElementById('btnBack').classList.add('show');
+    document.getElementById('bcCat').textContent = a.kategorie;
+    document.getElementById('bcTitle').textContent = a.titel;
+    document.getElementById('articleContent').innerHTML = `
+        <div class="article-header">
+            <span class="cat-tag tag-${a.katId}">${a.kategorie}</span>
+            <h2>${a.titel}</h2>
+            <div class="article-meta">
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>${a.datum}</span>
+                <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>ca. ${a.lesezeit}</span>
+            </div>
+        </div>
+        <div class="content">${a.inhalt}</div>
+        <div class="feedback-bar">
+            <p>War dieser Artikel hilfreich?</p>
+            <button onclick="this.parentElement.innerHTML='<p style=\\'color:var(--green);font-weight:600\\'>Danke f\u00fcr Ihr Feedback!</p>'">Ja, hilfreich</button>
+            <button onclick="this.parentElement.innerHTML='<p style=\\'color:var(--slate);font-weight:500\\'>Danke \u2014 wir arbeiten daran, diesen Artikel zu verbessern.</p>'">Nein</button>
+        </div>
+    `;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function filterCat(cat, btn) {
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    const cards = document.querySelectorAll('.cat-card');
+    let count = 0;
+    cards.forEach(c => {
+        const show = cat === 'alle' || c.dataset.cat === cat;
+        c.style.display = show ? '' : 'none';
+        if (show) count++;
+    });
+    document.getElementById('mainSection').style.display = '';
+    document.getElementById('heroSection').style.display = '';
+    document.getElementById('catNav').style.display = '';
+    document.getElementById('articleWrap').classList.remove('show');
+    document.getElementById('searchResults').classList.remove('show');
+    document.getElementById('btnBack').classList.remove('show');
+
+    const catNames = { alle: 'Alle Themen', ki: 'K\u00fcnstliche Intelligenz', ms365: 'Microsoft 365', browser: 'Browser & Web', sicherheit: 'IT-Sicherheit', hardware: 'Hardware & Ger\u00e4te', tipps: 'Tipps & Tricks' };
+    document.getElementById('sectionLabel').textContent = catNames[cat] || 'Alle Themen';
+    document.getElementById('sectionCount').textContent = cat === 'alle' ? '6 Kategorien \u00b7 27 Artikel' : count + ' Kategorie' + (count !== 1 ? 'n' : '');
+}
+
+function handleSearch() {
+    const q = document.getElementById('searchInput').value.toLowerCase().trim();
+    if (q.length < 2) {
+        document.getElementById('searchResults').classList.remove('show');
+        document.getElementById('mainSection').style.display = '';
+        document.getElementById('searchCount').textContent = '';
+        return;
+    }
+    document.getElementById('mainSection').style.display = 'none';
+    document.getElementById('articleWrap').classList.remove('show');
+    document.getElementById('searchResults').classList.add('show');
+
+    const hits = [];
+    for (const [id, a] of Object.entries(artikel)) {
+        const text = (a.titel + ' ' + a.kategorie + ' ' + a.inhalt).toLowerCase();
+        if (text.includes(q)) hits.push({ id, ...a });
+    }
+
+    document.getElementById('searchCount').textContent = hits.length + ' Treffer';
+    const status = document.getElementById('searchStatus');
+    const list = document.getElementById('searchList');
+    if (hits.length === 0) {
+        status.textContent = 'Keine Ergebnisse f\u00fcr \u201e' + document.getElementById('searchInput').value + '\u201c';
+        list.innerHTML = '<p style="color:var(--slate);text-align:center;padding:48px 0;">Versuchen Sie einen anderen Suchbegriff.</p>';
+    } else {
+        status.textContent = hits.length + ' Ergebnis' + (hits.length > 1 ? 'se' : '') + ' f\u00fcr \u201e' + document.getElementById('searchInput').value + '\u201c';
+        list.innerHTML = hits.map(h => `
+            <div class="result-item" onclick="showArticle('${h.id}')">
+                <span class="rtag tag-${h.katId}">${h.kategorie}</span>
+                <h4>${h.titel}</h4>
+                <p>Lesezeit: ca. ${h.lesezeit}</p>
+            </div>
+        `).join('');
+    }
+}
+
+// ===== SCROLL EFFECTS =====
+window.addEventListener('scroll', () => {
+    // Header shadow
+    document.getElementById('header').classList.toggle('scrolled', window.scrollY > 10);
+    // Scroll-to-top
+    document.getElementById('scrollTop').classList.toggle('show', window.scrollY > 400);
+    // Reading progress
+    const wrap = document.getElementById('articleWrap');
+    if (wrap.classList.contains('show')) {
+        const rect = wrap.getBoundingClientRect();
+        const total = wrap.scrollHeight - window.innerHeight;
+        const progress = Math.min(100, Math.max(0, (-rect.top / total) * 100));
+        document.getElementById('progressBar').style.width = progress + '%';
+    }
+});
+</script>
+</body>
+</html>
